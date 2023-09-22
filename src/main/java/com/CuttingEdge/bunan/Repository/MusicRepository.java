@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MusicRepository extends JpaRepository<Music,Long> {
+public interface MusicRepository extends JpaRepository<Music,Long>, MusicQuerydslRepository{
 }

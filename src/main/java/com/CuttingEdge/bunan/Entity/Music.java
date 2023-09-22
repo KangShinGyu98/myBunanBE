@@ -18,7 +18,7 @@ public class Music {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String title;
     private String singer;
     private String writer;
     private Date released;

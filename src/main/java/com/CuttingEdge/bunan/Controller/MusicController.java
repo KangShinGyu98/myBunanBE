@@ -1,9 +1,7 @@
 package com.CuttingEdge.bunan.Controller;
 
 import com.CuttingEdge.bunan.Dto.ApiDto;
-import com.CuttingEdge.bunan.Dto.MusicListDto;
-import com.CuttingEdge.bunan.Repository.MusicRepository;
-import com.CuttingEdge.bunan.Repository.TagRepository;
+import com.CuttingEdge.bunan.Dto.MusicListResDto;
 import com.CuttingEdge.bunan.service.MusicListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +19,14 @@ public class MusicController {
     private final MusicListService musicListService;
 
     @GetMapping("/musics")
-    public ApiDto<MusicListDto> getMusics(@RequestParam(required = false) Integer countryId,
-                                          @RequestParam(required = false) Integer genreId,
-                                          @RequestParam(required = false) String ordering,
-                                          @RequestParam(required = false) String search,
-                                          @RequestParam(required = false) List<String> tags) {
+    public ApiDto<MusicListResDto> getMusics(@RequestParam(required = false) String country,
+                                             @RequestParam(required = false) String genre,
+                                             @RequestParam(required = false) String ordering,
+                                             @RequestParam(required = false) String search,
+                                             @RequestParam(required = false) List<String> tags) {
 
-        List<MusicListDto> results = musicListService.getMusics(countryId, genreId, ordering, search, tags);
-        ApiDto<MusicListDto> returnDto = new ApiDto(results);
+        List<MusicListResDto> results = musicListService.getMusics(country, genre, ordering, search, tags);
+        ApiDto<MusicListResDto> returnDto = new ApiDto(results);
         return returnDto;// 예제로 모든 음악을 반환
     }
 

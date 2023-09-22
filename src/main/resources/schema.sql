@@ -1,7 +1,7 @@
 -- Create the 'music' table
 CREATE TABLE music (
     ID                  BIGINT AUTO_INCREMENT PRIMARY KEY,
-    NAME                VARCHAR(255) NOT NULL,
+    TITLE               VARCHAR(255) NOT NULL,
     VIDEO_ID            VARCHAR(255),
     LIKES               INT DEFAULT 0,
     VIEWS               INT DEFAULT 0,
