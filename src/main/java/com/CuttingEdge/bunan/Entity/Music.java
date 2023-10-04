@@ -21,16 +21,16 @@ public class Music {
     private String title;
     private String singer;
     private String writer;
-    private Date released;
-    private Date posted;
-    private Date modified;
-    private Date deleted;
     private String videoId;
     private Long likes;
     private Long views;
     private String country;
     private String genre;
 
+    private Date released;
+    private Date posted;
+    private Date modified;
+    private Date deleted;
 
     // 생성자, getter 및 setter
 }
