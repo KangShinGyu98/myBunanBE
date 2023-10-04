@@ -1,6 +1,7 @@
 package com.CuttingEdge.bunan.Entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,6 +10,8 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Table(name = "LYRIC_COMMENT")
 public class LyricComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +20,7 @@ public class LyricComment {
     private Integer likes;
     private Integer dislikes;
     private Integer reports;
-    private Integer writer;
+    private String writer;
 
     private Date created;
     private Date modified;
@@ -27,6 +30,19 @@ public class LyricComment {
     @JoinColumn(name = "lyric_id")
     private Lyric lyric;
 
+    public void setNewLyricComment(Lyric lyric, String content, String writer) {
+        this.content = content;
+        this.likes = 0;
+        this.dislikes = 0;
+        this.reports = 0;
+        this.writer = writer;
+        this.created = new Date();
+        this.modified = new Date();
+        this.deleted = null;
+        this.lyric = lyric;
+    }
 
 
 }
+
+

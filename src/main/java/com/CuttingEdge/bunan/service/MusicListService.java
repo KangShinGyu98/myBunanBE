@@ -1,8 +1,7 @@
 package com.CuttingEdge.bunan.service;
 
-import com.CuttingEdge.bunan.Dto.LirycsResDto;
+import com.CuttingEdge.bunan.Dto.LyricResDto;
 import com.CuttingEdge.bunan.Dto.MusicListResDto;
-import com.CuttingEdge.bunan.Entity.LyricComment;
 import com.CuttingEdge.bunan.Entity.Tag;
 import com.CuttingEdge.bunan.Repository.LyricCommentRepository;
 import com.CuttingEdge.bunan.Repository.LyricRepository;
@@ -49,15 +48,16 @@ public class MusicListService {
 
 
     // music id에 해당하는 Lyrics 를 order 순으로 반환 하면서, Lyric에 맞는 comment 를 좋아요 순으로 반환
-    public List<LirycsResDto> getLyrics(Long id) {
+    public List<LyricResDto> getLyrics(Long id) {
         if (musicRepository.findById(id).isEmpty()) {
             return null;
         }
-        List<LirycsResDto> result = LyricRepository.findAllByMusicIdOrderByOrderNumber(id).stream().map((l) -> (
-                new LirycsResDto(
-                        l.getId(), l.getContent(), l.getOrderNumber(), LyricCommentRepository.findAllByLyricIdOrderByLikes(l.getId())
+        List<LyricResDto> result = LyricRepository.findAllByMusicIdOrderByOrderNumber(id).stream().map((l) -> (
+                new LyricResDto(
+                        l.getId(), l.getContent(), l.getOrderNumber(), LyricCommentRepository.findAllByLyricIdOrderByLikes(l.getId()).stream().toList()
                 )
         )).collect(Collectors.toList());
+        log.info("result : " + result);
         return result;
     }
 }

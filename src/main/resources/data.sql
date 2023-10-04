@@ -18,4 +18,13 @@ INSERT INTO tag (ID, NAME, MUSIC_ID) VALUES
                      (3, '청춘', 2), -- Tag B is associated with Song 2
                      (4, '맑은 목소리', 2), -- Tag C is associated with Song 2
                      (5, '섹시', 3); -- Tag A is associated with Song 3
+INSERT INTO lyric ( CONTENT, ORDER_NUMBER, MUSIC_ID) VALUES
+        ( 'Lyric 1', 1, 1),
+        ( 'Lyric 2', 2, 1),
+        ( 'Lyric 3', 1, 2);
 
+-- Insert sample data into the 'lyricComment' table
+INSERT INTO lyric_Comment ( CONTENT, LIKES, DISLIKES, REPORTS, WRITER, CREATED, MODIFIED, DELETED, LYRIC_ID) VALUES
+       ( 'Comment 1', 10, 2, 1, 'User 1', '2023-01-16', '2023-01-16', NULL, 1),
+       ( 'Comment 2', 500, 1, 0, 'User 2', '2023-02-21', '2023-02-21', NULL, 1),
+       ( 'Comment 3', 8, 3, 0, 'User 3', '2023-03-11', '2023-03-11', NULL, 2);

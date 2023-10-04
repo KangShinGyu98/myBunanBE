@@ -40,7 +40,7 @@ public class QLyricComment extends EntityPathBase<LyricComment> {
 
     public final NumberPath<Integer> reports = createNumber("reports", Integer.class);
 
-    public final NumberPath<Integer> writer = createNumber("writer", Integer.class);
+    public final StringPath writer = createString("writer");
 
     public QLyricComment(String variable) {
         this(LyricComment.class, forVariable(variable), INITS);

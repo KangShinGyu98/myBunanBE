@@ -1,16 +1,17 @@
 package com.CuttingEdge.bunan.Controller;
 
 import com.CuttingEdge.bunan.Dto.ApiDto;
+import com.CuttingEdge.bunan.Dto.LyricInputReqDto;
 import com.CuttingEdge.bunan.Dto.MusicListResDto;
-import com.CuttingEdge.bunan.Dto.LirycsResDto;
+import com.CuttingEdge.bunan.Dto.LyricResDto;
+import com.CuttingEdge.bunan.Entity.LyricComment;
+import com.CuttingEdge.bunan.Repository.MusicRepository;
+import com.CuttingEdge.bunan.service.LyricService;
 import com.CuttingEdge.bunan.service.MusicListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
 public class MusicController {
 
     private final MusicListService musicListService;
-
+    private final LyricService lyricService;
     @GetMapping("/musics")
     public ApiDto<MusicListResDto> getMusics(@RequestParam(required = false) String country,
                                              @RequestParam(required = false) String genre,
@@ -34,19 +35,27 @@ public class MusicController {
     }
 
     @GetMapping("/videoId/{id}")
-    public ResponseEntity<String> getVideoId(@PathVariable Long id){
+    public ApiDto<String> getVideoId(@PathVariable Long id){
         log.info("id : " + id);
         String videoId = musicListService.getVideoId(id);
-        return ResponseEntity.ok().body(videoId);
+        ApiDto<String> returnDto = new ApiDto(List.of(videoId));
+        return returnDto;
     }
     @GetMapping("/musics/{id}")
-    public ApiDto<LirycsResDto> getMusicPost(@PathVariable Long id){
+    public ApiDto<LyricResDto> getMusicPost(@PathVariable Long id){
         log.info("id : " + id);
 
-        List<LirycsResDto> lirycsResDtos = musicListService.getLyrics(id);
+        List<LyricResDto> lyricsResDtos = musicListService.getLyrics(id);
         // music id에 해당하는 Lyrics 를 order 순으로 반환 하면서, Lyric에 맞는 comment 를 좋아요 순으로 반환
-        ApiDto<LirycsResDto> returnDto = new ApiDto(lirycsResDtos);
+        ApiDto<LyricResDto> returnDto = new ApiDto(lyricsResDtos);
         return returnDto;
+    }
+
+    @PostMapping("/lyricInput")
+    public LyricComment lyricInput(@RequestBody LyricInputReqDto dto){
+        log.info("lyricInputReqDto : " + dto);
+        LyricComment lyricComment= lyricService.saveLyricComment(dto.lyricId().longValue(), dto.content(), dto.writer());
+        return lyricComment;
     }
 
 
