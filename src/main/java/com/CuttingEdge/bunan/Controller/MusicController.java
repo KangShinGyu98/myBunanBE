@@ -1,9 +1,6 @@
 package com.CuttingEdge.bunan.Controller;
 
-import com.CuttingEdge.bunan.Dto.ApiDto;
-import com.CuttingEdge.bunan.Dto.LyricInputReqDto;
-import com.CuttingEdge.bunan.Dto.MusicListResDto;
-import com.CuttingEdge.bunan.Dto.LyricResDto;
+import com.CuttingEdge.bunan.Dto.*;
 import com.CuttingEdge.bunan.Entity.LyricComment;
 import com.CuttingEdge.bunan.Repository.MusicRepository;
 import com.CuttingEdge.bunan.service.LyricService;
@@ -56,6 +53,11 @@ public class MusicController {
         log.info("lyricInputReqDto : " + dto);
         LyricComment lyricComment= lyricService.saveLyricComment(dto.lyricId().longValue(), dto.content(), dto.writer());
         return lyricComment;
+    }
+    @PostMapping("/createNewMusic")
+    public ResponseEntity<String> createNewMusic(@RequestBody CreateNewMusicReqDto dto){
+        log.info("dto : " + dto);
+        return ResponseEntity.ok("success");
     }
 
 

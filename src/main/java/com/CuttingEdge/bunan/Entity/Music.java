@@ -20,12 +20,13 @@ public class Music {
     private Long id;
     private String title;
     private String singer;
-    private String writer;
+    private String songWriter;
     private String videoId;
     private Long likes;
     private Long views;
     private String country;
     private String genre;
+    private String postWriter;
 
     private Date released;
     private Date posted;

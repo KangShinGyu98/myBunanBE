@@ -33,17 +33,19 @@ public class QMusic extends EntityPathBase<Music> {
 
     public final DateTimePath<java.util.Date> posted = createDateTime("posted", java.util.Date.class);
 
+    public final StringPath postWriter = createString("postWriter");
+
     public final DateTimePath<java.util.Date> released = createDateTime("released", java.util.Date.class);
 
     public final StringPath singer = createString("singer");
+
+    public final StringPath songWriter = createString("songWriter");
 
     public final StringPath title = createString("title");
 
     public final StringPath videoId = createString("videoId");
 
     public final NumberPath<Long> views = createNumber("views", Long.class);
-
-    public final StringPath writer = createString("writer");
 
     public QMusic(String variable) {
         super(Music.class, forVariable(variable));

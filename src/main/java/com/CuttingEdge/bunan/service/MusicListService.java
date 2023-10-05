@@ -27,7 +27,7 @@ public class MusicListService {
 
         List<MusicListResDto> result = musicRepository.findFilteredAndSortedMusic(country, genre, ordering, search, tags).stream().map((m) -> (//m for music
                 new MusicListResDto(
-                        m.getId(), m.getTitle(), m.getSinger(), m.getWriter(), m.getReleased(), m.getPosted(),
+                        m.getId(), m.getTitle(), m.getSinger(), m.getSongWriter(),m.getPostWriter(), m.getReleased(), m.getPosted(),
                         m.getModified(), m.getDeleted(), m.getVideoId(), m.getLikes(), m.getViews(), m.getCountry(), m.getGenre(),
                         tagRepository.findAllTagNamesByMusicId(m.getId()).stream()
                                 .map(Tag::getName)
