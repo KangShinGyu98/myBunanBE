@@ -24,7 +24,6 @@ public class MusicController {
                                              @RequestParam(required = false) String ordering,
                                              @RequestParam(required = false) String search,
                                              @RequestParam(required = false) List<String> tags) {
-
         List<MusicListResDto> results = musicListService.getMusics(country, genre, ordering, search, tags);
         ApiDto<MusicListResDto> returnDto = new ApiDto(results);
         return returnDto;// 예제로 모든 음악을 반환

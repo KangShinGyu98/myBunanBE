@@ -32,9 +32,9 @@ public class LyricComment {
     @JoinColumn(name = "lyric_id")
     private Lyric lyric;
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-    public void setNewLyricComment(Lyric lyric, String content, String writer, User user) {
+    @JoinColumn(name = "member_id")
+    private Member member;
+    public void setNewLyricComment(Lyric lyric, String content, String writer, Member member) {
         this.content = content;
         this.likes = 0;
         this.dislikes = 0;
@@ -44,7 +44,7 @@ public class LyricComment {
         this.modified = new Date();
         this.deleted = null;
         this.lyric = lyric;
-        this.user = user;
+        this.member = member;
     }
 
 

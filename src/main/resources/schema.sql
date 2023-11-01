@@ -1,6 +1,6 @@
 -- Create the 'music' table
 
-CREATE TABLE `user` (
+CREATE TABLE member (
                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
                       nickname VARCHAR(255),
                       email VARCHAR(255),
@@ -22,8 +22,8 @@ CREATE TABLE music (
     POSTED              DATE,
     MODIFIED            DATE,
     DELETED             DATE,
-    USER_ID             BIGINT,
-    FOREIGN KEY (USER_ID) REFERENCES `user`(ID)
+    MEMBER_ID             BIGINT,
+    FOREIGN KEY (MEMBER_ID) REFERENCES member(ID)
     );
 
 -- Create the 'tag' table with a foreign key reference to 'music'
@@ -39,8 +39,8 @@ CREATE TABLE lyric (
     ORDER_NUMBER INT,
     MUSIC_ID INT,
     FOREIGN KEY (MUSIC_ID) REFERENCES music(ID),
-    USER_ID BIGINT,
-    FOREIGN KEY (USER_ID) REFERENCES `user`(ID)
+    MEMBER_ID BIGINT,
+    FOREIGN KEY (MEMBER_ID) REFERENCES member(ID)
 
 );
 CREATE TABLE lyric_comment (
@@ -55,6 +55,6 @@ CREATE TABLE lyric_comment (
     DELETED DATE,
     LYRIC_ID INT,
     FOREIGN KEY (LYRIC_ID) REFERENCES lyric(ID),
-    USER_ID BIGINT,
-    FOREIGN KEY (USER_ID) REFERENCES `user`(ID)
+    MEMBER_ID BIGINT,
+    FOREIGN KEY (MEMBER_ID) REFERENCES member(ID)
 );

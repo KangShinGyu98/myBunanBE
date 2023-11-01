@@ -24,6 +24,6 @@ public class Lyric {
     private Music music;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "member_id")
+    private Member member;
 }

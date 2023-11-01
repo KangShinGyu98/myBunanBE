@@ -20,7 +20,7 @@ public class MusicListService {
     private final TagRepository tagRepository;
     private final LyricRepository LyricRepository;
     private final LyricCommentRepository LyricCommentRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     public List<MusicListResDto> getMusics(String country, String genre, String ordering, String search, List<String> tags) {
 
         List<MusicListResDto> result = musicRepository.findFilteredAndSortedMusic(country, genre, ordering, search, tags).stream().map((m) -> (//m for music
@@ -60,7 +60,7 @@ public class MusicListService {
     }
 
     public void createNewMusic(String title, String singer, String songWriter, String postWriter, Date released, String videoId, String country, String genre, List<String> tags, List<String> lyrics, List<String> lyricComments) {
-        User user = userRepository.findByNickname(postWriter).get();
+        Member member = userRepository.findByNickname(postWriter).get();
         Music newMusic = Music.builder()
                 .title(title)
                 .singer(singer)
@@ -71,7 +71,7 @@ public class MusicListService {
                 .videoId(videoId)
                 .country(country)
                 .genre(genre)
-                .user(user)
+                .member(member)
                 .build();
         musicRepository.save(newMusic);
         for (int i=0; i<lyrics.size(); i++) {
@@ -82,7 +82,7 @@ public class MusicListService {
                     .build();
             LyricRepository.save(newLyric);
             LyricComment newLyricComment = new LyricComment();
-            newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter, user);
+            newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter, member);
             LyricCommentRepository.save(newLyricComment);
         }
     }

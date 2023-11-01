@@ -1,5 +1,5 @@
 package com.cuttingEdge.bunan.constant;
 
 public enum Role {
-    ROLE_USER, ROLE_ADMIN
+    ROLE_MEMBER, ROLE_ADMIN
 }
