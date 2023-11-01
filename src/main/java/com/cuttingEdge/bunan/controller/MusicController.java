@@ -18,7 +18,7 @@ public class MusicController {
 
     private final MusicListService musicListService;
     private final LyricService lyricService;
-    @GetMapping("/musics")
+    @GetMapping("/musics") //메인화면에서 모든 음악포스트를 반환
     public ApiDto<MusicListResDto> getMusics(@RequestParam(required = false) String country,
                                              @RequestParam(required = false) String genre,
                                              @RequestParam(required = false) String ordering,
@@ -29,6 +29,7 @@ public class MusicController {
         ApiDto<MusicListResDto> returnDto = new ApiDto(results);
         return returnDto;// 예제로 모든 음악을 반환
     }
+
 
     @GetMapping("/videoId/{id}")
     public ApiDto<String> getVideoId(@PathVariable Long id){

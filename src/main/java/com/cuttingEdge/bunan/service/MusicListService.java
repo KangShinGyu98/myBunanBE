@@ -2,14 +2,8 @@ package com.cuttingEdge.bunan.service;
 
 import com.cuttingEdge.bunan.dto.LyricResDto;
 import com.cuttingEdge.bunan.dto.MusicListResDto;
-import com.cuttingEdge.bunan.entity.Lyric;
-import com.cuttingEdge.bunan.entity.LyricComment;
-import com.cuttingEdge.bunan.entity.Music;
-import com.cuttingEdge.bunan.entity.Tag;
-import com.cuttingEdge.bunan.repository.LyricCommentRepository;
-import com.cuttingEdge.bunan.repository.LyricRepository;
-import com.cuttingEdge.bunan.repository.MusicRepository;
-import com.cuttingEdge.bunan.repository.TagRepository;
+import com.cuttingEdge.bunan.entity.*;
+import com.cuttingEdge.bunan.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,7 +20,7 @@ public class MusicListService {
     private final TagRepository tagRepository;
     private final LyricRepository LyricRepository;
     private final LyricCommentRepository LyricCommentRepository;
-
+    private final UserRepository userRepository;
     public List<MusicListResDto> getMusics(String country, String genre, String ordering, String search, List<String> tags) {
 
         List<MusicListResDto> result = musicRepository.findFilteredAndSortedMusic(country, genre, ordering, search, tags).stream().map((m) -> (//m for music
@@ -66,6 +60,7 @@ public class MusicListService {
     }
 
     public void createNewMusic(String title, String singer, String songWriter, String postWriter, Date released, String videoId, String country, String genre, List<String> tags, List<String> lyrics, List<String> lyricComments) {
+        User user = userRepository.findByNickname(postWriter).get();
         Music newMusic = Music.builder()
                 .title(title)
                 .singer(singer)
@@ -76,6 +71,7 @@ public class MusicListService {
                 .videoId(videoId)
                 .country(country)
                 .genre(genre)
+                .user(user)
                 .build();
         musicRepository.save(newMusic);
         for (int i=0; i<lyrics.size(); i++) {
@@ -86,7 +82,7 @@ public class MusicListService {
                     .build();
             LyricRepository.save(newLyric);
             LyricComment newLyricComment = new LyricComment();
-            newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter);
+            newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter, user);
             LyricCommentRepository.save(newLyricComment);
         }
     }
