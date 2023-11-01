@@ -7,23 +7,22 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
-@Getter
 @Builder
-@NoArgsConstructor
+@Getter
+@Entity
 @AllArgsConstructor
-public class Lyric {
+@NoArgsConstructor
+@Table(name = "`user`")
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String content;
-    private Integer orderNumber;
+    private String nickname;
+    private String email;
+    private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "music_id")
-    private Music music;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

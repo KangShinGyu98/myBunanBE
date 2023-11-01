@@ -13,8 +13,8 @@ CREATE TABLE music (
     RELEASED            DATE,
     POSTED              DATE,
     MODIFIED            DATE,
-    DELETED             DATE
---     USER_ID             INT REFERENCES user(ID)
+    DELETED             DATE,
+    FOREIGN KEY (USER_ID) REFERENCES user(ID)
     );
 
 -- Create the 'tag' table with a foreign key reference to 'music'
@@ -30,6 +30,8 @@ CREATE TABLE lyric (
     ORDER_NUMBER INT,
     MUSIC_ID INT,
     FOREIGN KEY (MUSIC_ID) REFERENCES music(ID)
+    FOREIGN KEY (USER_ID) REFERENCES user(ID)
+
 );
 CREATE TABLE lyric_comment (
     Id INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,5 +45,12 @@ CREATE TABLE lyric_comment (
     DELETED DATE,
     LYRIC_ID INT,
     FOREIGN KEY (LYRIC_ID) REFERENCES lyric(ID)
+    FOREIGN KEY (USER_ID) REFERENCES user(ID)
 );
 
+CREATE TABLE user (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nickname VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255)
+);

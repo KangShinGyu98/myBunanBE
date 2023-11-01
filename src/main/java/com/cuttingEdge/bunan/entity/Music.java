@@ -31,6 +31,8 @@ public class Music {
     private Date posted;
     private Date modified;
     private Date deleted;
-
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     // 생성자, getter 및 setter
 }

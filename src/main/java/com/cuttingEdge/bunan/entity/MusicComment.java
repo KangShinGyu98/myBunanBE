@@ -25,6 +25,8 @@ public class MusicComment {
     @ManyToOne
     @JoinColumn(name = "music_id")
     private Music music;
-
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }
