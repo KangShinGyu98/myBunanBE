@@ -1,0 +1,20 @@
+package com.cuttingEdge.bunan.dto;
+
+import java.util.Date;
+import java.util.List;
+
+public record CreateNewMusicReqDto(
+        String title,
+        String singer,
+        String songWriter,
+        String postWriter,
+        Date released,
+        String videoId,
+        String country,
+        String genre,
+        List<String> tags,
+        List<String> lyric,
+        List<String> lyricComment
+
+) {
+}
