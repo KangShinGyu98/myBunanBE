@@ -7,7 +7,9 @@ import javax.validation.constraints.Pattern;
 
 public record MemberJoinRequestDto(
         @NotBlank(message = "별명은 필수 입력 값입니다.")
+        @Pattern(regexp = "\\S+", message = "별명에 공백을 포함할 수 없습니다.")
         String nickname,
+
         @Email(message = "이메일 형식이 올바르지 않습니다.")
         String email,
         @NotBlank(message = "비밀번호는 필수 입력 값입니다.")

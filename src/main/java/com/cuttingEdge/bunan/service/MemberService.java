@@ -51,8 +51,9 @@ public class MemberService {
         if (!encoder.matches(password, selectedMember.getPassword())) {
             throw new AppException(ErrorCode.INVALID_PASSWORD, "잘못된 패스워드입니다.");
         }
-        log.info("로그인 성공");
-        String token = jwtUtil.createToken(selectedMember.getEmail());
+        log.info("로그인 성공 : {} ",selectedMember.getNickname());
+
+        String token = jwtUtil.createToken(selectedMember.getEmail(),selectedMember.getNickname());
         // 앞에서 Exception 안났으면 토큰 발행
         log.info("토큰 발행 성공");
         

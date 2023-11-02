@@ -26,9 +26,11 @@ public class JwtUtil {
                 .getBody().getExpiration().before(new Date());
     }
 
-    public String createToken(String email) {
+    public String createToken(String email, String nickname) {
         Claims claims = Jwts.claims(); //일종의 map
         claims.put("email", email);
+        claims.put("nickname", nickname);
+
 
         return Jwts.builder()
                 .setClaims(claims)
