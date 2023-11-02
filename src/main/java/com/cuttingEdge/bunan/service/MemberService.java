@@ -21,21 +21,22 @@ public class MemberService {
     private final PasswordEncoder encoder;
 
     public String join(String nickname, String email, String password) { //닉네임 로직 분리해야할듯?
-
         // membername, email 중복 check
-        memberRepository.existsMemberByEmail(email)
-                .ifPresent(member -> {throw new AppException(ErrorCode.USERNAME_DUPLICATED, email + "은(는) 이미 존재합니다.");
-                });
-        memberRepository.findByNickname(nickname)
-                .ifPresent(member -> {throw new AppException(ErrorCode.USERNAME_DUPLICATED, nickname + "은(는) 이미 존재합니다.");
-                });
-        // 저장
+        if (memberRepository.existsMemberByEmail(email)){
+            throw new AppException(ErrorCode.USERNAME_DUPLICATED, email + "은(는) 이미 존재합니다.");
+        }
 
+        if (memberRepository.existsMemberByNickname(nickname)){
+            throw new AppException(ErrorCode.USERNAME_DUPLICATED, nickname + "은(는) 이미 존재합니다.");
+        }
+
+        // 저장
         Member member = Member.builder()
                 .nickname(nickname)
                 .email(email)
                 .password(encoder.encode(password))
                 .build();
+
         memberRepository.save(member);
 
         return "SUCCESS";
@@ -50,9 +51,11 @@ public class MemberService {
         if (!encoder.matches(password, selectedMember.getPassword())) {
             throw new AppException(ErrorCode.INVALID_PASSWORD, "잘못된 패스워드입니다.");
         }
-
+        log.info("로그인 성공");
         String token = jwtUtil.createToken(selectedMember.getEmail());
         // 앞에서 Exception 안났으면 토큰 발행
+        log.info("토큰 발행 성공");
+        
         return token;
     }
 

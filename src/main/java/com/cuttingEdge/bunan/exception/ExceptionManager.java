@@ -19,7 +19,7 @@ public class ExceptionManager extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AppException.class)
     public ResponseEntity<?> appExceptionHandler(AppException e) {
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
-                .body(e.getErrorCode().name() + " " + e.getMessage());
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)

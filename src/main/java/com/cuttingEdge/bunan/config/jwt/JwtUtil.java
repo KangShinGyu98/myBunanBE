@@ -3,6 +3,7 @@ package com.cuttingEdge.bunan.config.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -10,7 +11,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-//    @Value("${jwt.secret}")
+    @Value("${jwt.secret}")
     private String secretKey;
 
     private static final Long ACCESS_TOKEN_EXPIRED_TIME_MS = 1000 * 60 * 60L;
