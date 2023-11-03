@@ -73,6 +73,12 @@ public class MemberService {
 
         selectedMember.updatePassword(encoder.encode(newPassword));
     }
+    @Transactional
+    public void nicknameCheck(String nickname){
+        if (memberRepository.existsMemberByNickname(nickname)){
+            throw new AppException(ErrorCode.USERNAME_DUPLICATED, nickname + "은(는) 이미 존재합니다.");
+        }
+    }
 
     public void resetDB(){
         memberRepository.deleteAll();

@@ -3,6 +3,7 @@ package com.cuttingEdge.bunan.controller;
 
 import com.cuttingEdge.bunan.dto.MemberJoinRequestDto;
 import com.cuttingEdge.bunan.dto.MemberLoginRequestDto;
+import com.cuttingEdge.bunan.dto.MemberNicknameCheckDto;
 import com.cuttingEdge.bunan.dto.MemberResetRequestDto;
 import com.cuttingEdge.bunan.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,11 @@ public class MemberController {
 //        memberService.resetPassword(dto.email(), dto.password(), dto.newPassword());
 //        return ResponseEntity.ok().body("비밀번호가 변경되었습니다.");
 //    }
-
+    @PostMapping("/nicknameCheck")
+    public ResponseEntity<String> nicknameCheck(@RequestBody @Valid MemberNicknameCheckDto dto) {
+        memberService.nicknameCheck(dto.nickname());
+        return ResponseEntity.ok().body( dto.nickname()+" 은 사용 가능한 닉네임 입니다.");
+    }
     @GetMapping("/resetDB")
     public ResponseEntity<String> reset() {
 
