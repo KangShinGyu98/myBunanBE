@@ -1,10 +1,11 @@
 package com.cuttingEdge.bunan.controller;
 
 
-import com.cuttingEdge.bunan.dto.MemberJoinRequestDto;
-import com.cuttingEdge.bunan.dto.MemberLoginRequestDto;
+import com.cuttingEdge.bunan.dto.MemberJoinReqDto;
+import com.cuttingEdge.bunan.dto.MemberLoginReqDto;
 import com.cuttingEdge.bunan.dto.MemberNicknameCheckDto;
-import com.cuttingEdge.bunan.dto.MemberResetRequestDto;
+import com.cuttingEdge.bunan.dto.VerifyEmailReqDto;
+import com.cuttingEdge.bunan.service.MailService;
 import com.cuttingEdge.bunan.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,15 +21,18 @@ import javax.validation.Valid;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MailService mailService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<String> join(@RequestBody @Valid MemberJoinRequestDto dto) {
+    public ResponseEntity<String> join(@RequestBody @Valid MemberJoinReqDto dto) {
+        mailService.verifyEmail(dto.email(), dto.code());
         memberService.join(dto.nickname(), dto.email(), dto.password());
+
         return ResponseEntity.ok().body("회원가입이 완료되었습니다.");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid MemberLoginRequestDto dto) {
+    public ResponseEntity<String> login(@RequestBody @Valid MemberLoginReqDto dto) {
         String token = memberService.login(dto.email(), dto.password());
         return ResponseEntity.ok().body(token);
     }

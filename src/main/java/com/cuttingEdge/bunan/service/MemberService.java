@@ -23,11 +23,11 @@ public class MemberService {
     public String join(String nickname, String email, String password) { //닉네임 로직 분리해야할듯?
         // membername, email 중복 check
         if (memberRepository.existsMemberByEmail(email)){
-            throw new AppException(ErrorCode.USERNAME_DUPLICATED, email + "은(는) 이미 존재합니다.");
+            throw new AppException(ErrorCode.EMAIL_DUPLICATED, email + "은(는) 이미 존재합니다.");
         }
 
         if (memberRepository.existsMemberByNickname(nickname)){
-            throw new AppException(ErrorCode.USERNAME_DUPLICATED, nickname + "은(는) 이미 존재합니다.");
+            throw new AppException(ErrorCode.NICKNAME_DUPLICATED, nickname + "은(는) 이미 존재합니다.");
         }
 
         // 저장
@@ -76,10 +76,15 @@ public class MemberService {
     @Transactional
     public void nicknameCheck(String nickname){
         if (memberRepository.existsMemberByNickname(nickname)){
-            throw new AppException(ErrorCode.USERNAME_DUPLICATED, nickname + "은(는) 이미 존재합니다.");
+            throw new AppException(ErrorCode.NICKNAME_DUPLICATED, nickname + "은(는) 이미 존재합니다.");
         }
     }
-
+    @Transactional
+    public void emailCheck(String email){
+        if (memberRepository.existsMemberByEmail(email)){
+            throw new AppException(ErrorCode.EMAIL_DUPLICATED, email + "은(는) 이미 존재합니다.");
+        }
+    }
     public void resetDB(){
         memberRepository.deleteAll();
     }
