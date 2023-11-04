@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
+    PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 확인과 일치하지 않습니다.."),
     NICKNAME_DUPLICATED(HttpStatus.CONFLICT, "중복된 별명입니다."),
     EMAIL_DUPLICATED(HttpStatus.CONFLICT, "중복된 이메일입니다."),
     USERNAME_NOT_FOUND(HttpStatus.NOT_FOUND, ""),

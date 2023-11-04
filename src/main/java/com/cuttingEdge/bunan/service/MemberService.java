@@ -20,7 +20,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
 
-    public String join(String nickname, String email, String password) { //닉네임 로직 분리해야할듯?
+    public String join(String nickname, String email, String password, String passwordCheck) { //닉네임 로직 분리해야할듯?
+
+        // password 일치 check
+        if (!password.equals(passwordCheck)){
+            throw new AppException(ErrorCode.PASSWORD_NOT_MATCHED, "비밀번호가 일치하지 않습니다.");
+        }
         // membername, email 중복 check
         if (memberRepository.existsMemberByEmail(email)){
             throw new AppException(ErrorCode.EMAIL_DUPLICATED, email + "은(는) 이미 존재합니다.");

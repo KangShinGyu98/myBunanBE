@@ -23,10 +23,13 @@ public class MemberController {
     private final MemberService memberService;
     private final MailService mailService;
 
+
+
     @PostMapping("/signUp")
     public ResponseEntity<String> join(@RequestBody @Valid MemberJoinReqDto dto) {
+
         mailService.verifyEmail(dto.email(), dto.code());
-        memberService.join(dto.nickname(), dto.email(), dto.password());
+        memberService.join(dto.nickname(), dto.email(), dto.password(),dto.passwordCheck());
 
         return ResponseEntity.ok().body("회원가입이 완료되었습니다.");
     }
