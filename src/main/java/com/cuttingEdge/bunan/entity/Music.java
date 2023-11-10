@@ -35,4 +35,12 @@ public class Music {
     @JoinColumn(name = "member_id")
     private Member member;
     // 생성자, getter 및 setter
+
+    public void likes(){
+        this.likes++;
+    }
+    public void disLikes(){
+        this.likes--;
+    }
+
 }

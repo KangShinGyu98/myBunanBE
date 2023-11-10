@@ -47,7 +47,12 @@ public class LyricComment {
         this.member = member;
     }
 
-
+    public void likes(){
+        this.likes++;
+    }
+    public void undoLike(){
+        this.likes--;
+    }
 }
 
 

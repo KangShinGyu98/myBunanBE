@@ -32,6 +32,7 @@ public class MailService {
 //        TODO map 에서 email 이 이미 있는 경우에는?
         javaMailSender.send(message);
 
+
     }
     public boolean verifyEmail(String email, Integer code) {
         return verifyCode(email, code);

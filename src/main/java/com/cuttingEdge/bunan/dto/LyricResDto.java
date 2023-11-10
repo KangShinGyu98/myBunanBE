@@ -9,7 +9,7 @@ public record LyricResDto(
         Long id,
         String content,
         Integer order,
-        List<LyricComment> lyricComments
+        List<LyricCommentResDto> lyricComments
 ) {
 }
 

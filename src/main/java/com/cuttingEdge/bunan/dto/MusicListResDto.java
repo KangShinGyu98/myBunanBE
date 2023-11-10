@@ -20,5 +20,7 @@ public record MusicListResDto(
         String genre,
         List<String> tags
 
+        ,Boolean likey
+
 ){
 }

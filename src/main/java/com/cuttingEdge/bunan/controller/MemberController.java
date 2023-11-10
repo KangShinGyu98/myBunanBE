@@ -30,8 +30,8 @@ public class MemberController {
 
         mailService.verifyEmail(dto.email(), dto.code());
         memberService.join(dto.nickname(), dto.email(), dto.password(),dto.passwordCheck());
-
-        return ResponseEntity.ok().body("회원가입이 완료되었습니다.");
+        String token = memberService.login(dto.email(), dto.password());
+        return ResponseEntity.ok().body(token);
     }
 
     @PostMapping("/login")
