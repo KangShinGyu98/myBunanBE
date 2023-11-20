@@ -5,10 +5,10 @@ INSERT INTO member ( nickname, email, password) VALUES
       ( 'User 2', 'test2@example.com', 'encoded2');
 
 INSERT INTO music
-(TITLE, VIDEO_ID, LIKES, VIEWS, COUNTRY, GENRE, SINGER, SONGWRITER, POSTWRITER, RELEASED, POSTED, MODIFIED, DELETED, MEMBER_ID)
+(TITLE, VIDEO_ID, LIKES, VIEWS, COUNTRY, GENRE, SINGER, SONG_WRITER, POST_WRITER, LYRIC_WRITER,REMIX_ARTIST,RELEASED, POSTED, MODIFIED, DELETED, MEMBER_ID)
 VALUES
-    ('Song 1', 'liJVSwOiiwg', 100, 1, '미국', '댄스/팝', 'Singer 1', 'Writer 1','Writer 1', '2023-01-15', '2023-01-01', '2023-01-15', NULL, 1),
-    ('Song 2', 'liJVSwOiiwg', 150, 2, '영국', '댄스/팝', 'Singer 2', 'Writer 2','Writer 1', '2023-02-20', '2023-02-01', '2023-02-20', NULL, 2);
+    ('Song 1', 'liJVSwOiiwg', 100, 1, '미국', '댄스/팝', 'Singer 1', 'Writer 1','Writer 1','lyric Writer 1','remix Writer 1', '2023-01-15', '2023-01-01', '2023-01-15', NULL, 1),
+    ('Song 2', 'liJVSwOiiwg', 150, 2, '영국', '댄스/팝', 'Singer 2', 'Writer 2','Writer 1', 'lyric Writer 2','remix Writer 2','2023-02-20', '2023-02-01', '2023-02-20', NULL, 2);
 --     ('Song 4', 'liJVSwOiiwg', 15, 10, '영국', '락/메탈', 'Singer 1', 'Writer 3','Writer 1', '2023-03-10', '2023-03-01', '2023-03-10', NULL, 1),
 --     ('Song 5', 'liJVSwOiiwg', 200, 1000000, '라틴/남미', '락/메탈', 'Singer 1', 'Writer 3','Writer 1', '2023-03-10', '2023-03-01', '2023-03-10', NULL, 2),
 --     ('Song 6', 'liJVSwOiiwg', 0, 5000000, '일본', '알앤비/소울/재즈', 'Singer 1', 'Writer 3','Writer 1', '2023-03-10', '2023-03-01', '2023-03-10', NULL, 1),

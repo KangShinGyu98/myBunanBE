@@ -2,36 +2,51 @@ package com.cuttingEdge.bunan.service;
 
 import com.cuttingEdge.bunan.dto.LyricResDto;
 import com.cuttingEdge.bunan.dto.MusicListResDto;
+import com.cuttingEdge.bunan.dto.MusicPostResDto;
+import com.cuttingEdge.bunan.dto.UpdateMusicResDto;
 import com.cuttingEdge.bunan.entity.*;
+import com.cuttingEdge.bunan.exception.AppException;
+import com.cuttingEdge.bunan.exception.ErrorCode;
 import com.cuttingEdge.bunan.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MusicListService {
     private final MusicRepository musicRepository;
-    private final LyricRepository LyricRepository;
-    private final LyricCommentRepository LyricCommentRepository;
+    private final LyricRepository lyricRepository;
+    private final LyricCommentRepository lyricCommentRepository;
     private final MemberRepository memberRepository;
     private final LikeyRepository likeyRepository;
+
+
+    public MusicPostResDto getMusicPost(Long musicId){
+        Music music = musicRepository.findById(musicId).get();
+        MusicPostResDto result = new MusicPostResDto(music.getId(),music.getTitle(),music.getSinger(),music.getSongWriter(),music.getPostWriter(),music.getLyricWriter(),music.getRemixArtist(),music.getReleased(),music.getPosted(),music.getModified(), music.getDeleted(),music.getVideoId(),music.getLikes(), music.getViews(),music.getCountry(), music.getGenre(),new ArrayList<>(),false);
+        return result;
+    }
 
     public List<MusicListResDto> getMusics(String country, String genre, String ordering, String search, List<String> tags) {
 
         List<MusicListResDto> result = musicRepository.findFilteredAndSortedMusic(country, genre, ordering, search, tags).stream().map((m) -> {//m for music
 
-            log.info("id : {} lieks : {}",m.getId(), m.getLikes());
+            log.info("id : {} lieks : {} songWriter: {}",m.getId(), m.getLikes(),m.getSongWriter());
                  return new MusicListResDto(
-                            m.getId(), m.getTitle(), m.getSinger(), m.getSongWriter(), m.getPostWriter(), m.getReleased(), m.getPosted(),
+                            m.getId(), m.getTitle(), m.getSinger(), m.getSongWriter(), m.getPostWriter(), m.getLyricWriter(),m.getRemixArtist(),m.getReleased(), m.getPosted(),
                             m.getModified(), m.getDeleted(), m.getVideoId(), m.getLikes(), m.getViews(), m.getCountry(), m.getGenre(),
                             new ArrayList<>()
 //                        tagRepository.findAllTagNamesByMusicId(m.getId()).stream()
@@ -59,7 +74,7 @@ public class MusicListService {
 
             log.info("musics id : {} likes : {} liked? : {}", m.getId(), m.getLikes(),isLikedByUser);
             return new MusicListResDto(
-                    m.getId(), m.getTitle(), m.getSinger(), m.getSongWriter(), m.getPostWriter(), m.getReleased(), m.getPosted(),
+                    m.getId(), m.getTitle(), m.getSinger(), m.getSongWriter(), m.getPostWriter(),m.getLyricWriter(),m.getRemixArtist(), m.getReleased(), m.getPosted(),
                     m.getModified(), m.getDeleted(), m.getVideoId(), m.getLikes(), m.getViews(), m.getCountry(), m.getGenre(),
                     new ArrayList<>()
 
@@ -85,15 +100,20 @@ public class MusicListService {
     // music id에 해당하는 Lyrics 를 order 순으로 반환 하면서, Lyric에 맞는 comment 를 좋아요 순으로 반환
 
 
-    public void createNewMusic(String title, String singer, String songWriter, String postWriter, Date released, String videoId, String country, String genre, List<String> tags, List<String> lyrics, List<String> lyricComments) {
+    public void createNewMusic(String title, String singer, String songWriter, String postWriter,String lyricWriter,String remixArtist , LocalDate released, String videoId, String country, String genre, List<String> tags, List<String> lyrics, List<String> lyricComments) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate currentDate = now.toLocalDate();
+
         Member member = memberRepository.findByNickname(postWriter).get();
         Music newMusic = Music.builder()
                 .title(title)
                 .singer(singer)
                 .songWriter(songWriter)
                 .postWriter(postWriter)
+                .lyricWriter(lyricWriter)
+                .remixArtist(remixArtist)
                 .released(released)
-                .posted(new Date())
+                .posted(currentDate)
                 .videoId(videoId)
                 .country(country)
                 .genre(genre)
@@ -107,11 +127,82 @@ public class MusicListService {
                     .orderNumber(i)
                     .music(newMusic)
                     .build();
-            LyricRepository.save(newLyric);
+            lyricRepository.save(newLyric);
             LyricComment newLyricComment = new LyricComment();
             newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter, member);
-            LyricCommentRepository.save(newLyricComment);
+            lyricCommentRepository.save(newLyricComment);
         }
+    }
+
+    public void updateMusic(Long musicId,String title, String singer, String songWriter, String postWriter,String lyricWriter,String remixArtist , LocalDate released, String videoId, String country, String genre, List<String> tags, List<String> lyrics, List<String> lyricComments) {
+//        musicId 도 받아오고
+//        security context 에서 닉네임 가져오고
+//        postwriter랑 비교도 하고 닉네임이니까
+//        set 하고
+//        save 하고
+//        react 에서 toast도 해주고
+        // 현재 사용자의 인증 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 현재 사용자의 닉네임 가져오기
+        String currentEmail = authentication.getName();
+        String currentNickname = memberRepository.findByEmail(currentEmail).get().getNickname();
+
+        //music, member 선언
+        Music music = musicRepository.findById(musicId).orElseThrow(()-> new AppException(ErrorCode.MUSICID_NOT_FOUND,"없는 음악 포스트 입니다."));
+        Member member = memberRepository.findByEmail(currentEmail).orElseThrow(()-> new AppException(ErrorCode.INVALID_EMAIL,"잘못된 유저 입니다."));
+
+        // Music 엔티티의 postWriter와 현재 사용자의 닉네임 비교
+        if (!music.getPostWriter().equals(currentNickname)) {
+            throw new AppException(ErrorCode.INVALID_USER, "잘못된 사용자 입니다.");
+        }
+        music.update(title,singer,songWriter,lyricWriter,remixArtist,released,videoId,country,genre);
+
+//        기존의 lyric 을 가져와서 수정하고 lyric comment 는 추가하는 방식으로 하면 기존의 update 도 안사라질듯 ?
+        List<Lyric> existedLyrics = lyricRepository.findAllByMusicIdOrderByOrderNumber(musicId);
+
+        log.info(" existed Lyrics : {}",existedLyrics.toString());
+//      기존의 lyric 이랑 새로 들어오는 lyric 이랑 길이가 다를 수 있다.
+//      새 lyrics 를 기준으로 기존의 lyric을 업데이트 하지만 새 lyric 이 더 길면 새 lyric을 만들면 되고,
+//      기존의 lyric이 더 길면 남는 만큼 삭제하자
+
+        if (existedLyrics.size() >= lyrics.size()){
+            for (int i=0; i<existedLyrics.size(); i++){
+                Lyric ithLyric = existedLyrics.get(i);
+                if (i>=lyrics.size()){
+                    lyricRepository.delete(ithLyric);
+                }else {
+                    ithLyric.update(lyrics.get(i),music);
+                    lyricRepository.save(ithLyric);
+                    LyricComment newLyricComment = new LyricComment();
+                    newLyricComment.setNewLyricComment(ithLyric, lyricComments.get(i), postWriter, member);
+                    lyricCommentRepository.save(newLyricComment);
+                }
+            }
+        }else{
+            for (int i=0; i<lyrics.size(); i++){
+                Lyric ithLyric = existedLyrics.get(i);
+                if (i>=lyrics.size()){
+                    Lyric newLyric = Lyric.builder()
+                            .content(lyrics.get(i))
+                            .orderNumber(i)
+                            .music(music)
+                            .build();
+                    lyricRepository.save(newLyric);
+                    LyricComment newLyricComment = new LyricComment();
+                    newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter, member);
+                    lyricCommentRepository.save(newLyricComment);
+                }else {
+                    ithLyric.update(lyrics.get(i),music);
+                    lyricRepository.save(ithLyric);
+                    LyricComment newLyricComment = new LyricComment();
+                    newLyricComment.setNewLyricComment(ithLyric, lyricComments.get(i), postWriter, member);
+                    lyricCommentRepository.save(newLyricComment);
+                }
+            }
+
+        }
+
     }
 
 
@@ -151,6 +242,54 @@ public class MusicListService {
             log.warn("likes now : {}",musicRepository.findById(musicId).get().getLikes().toString());
             // Likey 생성 또는 다른 작업 수행
             return;
+        }
+    }
+
+    public void deleteMusic( Optional<String> nickname, Optional<Long> musicId){
+        if (!nickname.isPresent()) throw new AppException(ErrorCode.INVALID_EMAIL,"존재하지 않는 이메일 입니다.");
+        if (!musicRepository.existsById(musicId.get())) throw new AppException(ErrorCode.MUSICID_NOT_FOUND,"존재하지 않는 포스트 ID 입니다.");
+        if (!nickname.get().equals(musicRepository.findById(musicId.get()).get().getPostWriter())) throw new AppException(ErrorCode.INVALID_USER,"음악을 포스트한 사용자가 아닙니다.");
+
+        musicRepository.deleteById(musicId.get());
+
+    }
+
+    public UpdateMusicResDto getUpdateMusic(Long musicId) {
+        // 현재 사용자의 인증 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 현재 사용자의 닉네임 가져오기
+        String currentEmail = authentication.getName();
+        String postWriter = memberRepository.findByEmail(currentEmail).get().getNickname();
+
+        log.info("current nickname : {} auth : {}", currentEmail,authentication.toString());
+
+        // musicId를 사용하여 Music 엔티티 조회
+        Optional<Music> musicOptional = musicRepository.findById(musicId);
+
+        if (musicOptional.isPresent()) {
+            Music music = musicOptional.get();
+            // Music 엔티티의 postWriter와 현재 사용자의 닉네임 비교
+            if (music.getPostWriter().equals(postWriter)) {
+                List<Lyric> lyrics = lyricRepository.findAllByMusicIdOrderByOrderNumber(musicId);
+
+                String mergedLyrics = lyrics.stream()
+                        .map(lyric -> lyric.getContent())
+                        .collect(Collectors.joining("\n\n"));
+                String mergedLyricComments = lyrics.stream().map(lyric -> {
+                    return lyricCommentRepository.findAllByLyricIdOrderByLikesDesc(lyric.getId()).get(0).getContent();
+                }).collect(Collectors.joining("\n\n"));
+
+                log.info("req update LyricWriter : {} RemixArtist : {}  Released : {}", music.getLyricWriter(),music.getRemixArtist(),music.getReleased().toString());
+                return new UpdateMusicResDto(music.getTitle(),music.getSinger(),music.getSongWriter(),music.getPostWriter(),music.getLyricWriter(),music.getRemixArtist(),music.getReleased(),music.getVideoId(),music.getCountry(),music.getGenre(),new ArrayList<String>(),mergedLyrics,mergedLyricComments);
+            } else {
+                // postWriter와 현재 사용자가 일치하지 않는 경우에 대한 처리
+                throw new AppException(ErrorCode.INVALID_USER,"잘못된 사용자 입니다.");
+            }
+        } else {
+            throw new AppException(ErrorCode.MUSICID_NOT_FOUND,"없는 음악 포스트 입니다.");
+            // musicId에 해당하는 레코드가 없는 경우에 대한 처리
+            // ...
         }
     }
 }

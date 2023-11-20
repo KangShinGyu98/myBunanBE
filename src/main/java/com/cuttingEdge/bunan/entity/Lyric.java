@@ -26,4 +26,8 @@ public class Lyric {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+    public void update(String content,Music music){
+        this.content = content;
+        this.music = music;
+    }
 }

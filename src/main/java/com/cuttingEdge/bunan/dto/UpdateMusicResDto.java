@@ -4,27 +4,20 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-public record MusicListResDto(
-        Long id,
+public record UpdateMusicResDto(
         String title,
         String singer,
         String songWriter,
         String postWriter,
         String lyricWriter,
         String remixArtist,
-
         LocalDate released,
-        LocalDate posted,
-        LocalDate modified,
-        LocalDate deleted,
         String videoId,
-        Long likes,
-        Long views,
         String country,
         String genre,
-        List<String> tags
+        List<String> tags,
+        String lyric,
+        String lyricComment
 
-        ,Boolean likey
-
-){
+) {
 }

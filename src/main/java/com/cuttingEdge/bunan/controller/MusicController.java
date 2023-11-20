@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class MusicController {
 
     private final MusicListService musicListService;
     private final LyricService lyricService;
+
     @GetMapping("/musics") //메인화면에서 모든 음악포스트를 반환
     public ApiDto<MusicListResDto> getMusics(@RequestParam(required = false) String country,
                                              @RequestParam(required = false) String genre,
@@ -45,14 +47,14 @@ public class MusicController {
     }
 
 
-    @GetMapping("/videoId/{id}")
-    public ApiDto<String> getVideoId(@PathVariable Long id){
+    @GetMapping("/music/{id}")
+    public MusicPostResDto getVideoId(@PathVariable Long id){
         log.info("id : " + id);
-        String videoId = musicListService.getVideoId(id);
-        ApiDto<String> returnDto = new ApiDto(List.of(videoId));
-        return returnDto;
+
+        MusicPostResDto result = musicListService.getMusicPost(id);
+        return result;
     }
-    @GetMapping("/musics/{musicId}")
+    @GetMapping("/lyric/{musicId}")
     public ApiDto<LyricResDto> getMusicPost(@PathVariable Long musicId,
                                             @RequestParam(required = false) String nickname){
         log.info("getMusicPost , music id : {} nickname : {}",musicId, nickname);
@@ -86,7 +88,7 @@ public class MusicController {
     public ResponseEntity<String> createNewMusic(@RequestBody CreateNewMusicReqDto dto, BindingResult bindingResult){
         log.info(bindingResult.toString());
         log.warn("createNewMusicReqDto : " + dto);
-        musicListService.createNewMusic(dto.title(), dto.singer(), dto.songWriter(), dto.postWriter(), dto.released(), dto.videoId(), dto.country(), dto.genre(), dto.tags(),dto.lyric(), dto.lyricComment());
+        musicListService.createNewMusic(dto.title(), dto.singer(), dto.songWriter(), dto.postWriter(), dto.lyricWriter(), dto.remixArtist(), dto.released(), dto.videoId(), dto.country(), dto.genre(), dto.tags(),dto.lyric(), dto.lyricComment());
         return ResponseEntity.ok("success");
     }
 
@@ -96,4 +98,33 @@ public class MusicController {
         musicListService.likeMusic( dto.musicId(),dto.email());
         return ResponseEntity.ok("success");
     }
+
+    //todo await axios.post(`http://localhost:8080/update/${musicQuery.id}` => UpdatePost 참고할 것
+    //todo const response = await axios.get(`http://localhost:8080/update/${id}`); updateMusicPost 참고할 것
+
+
+    @DeleteMapping("/music/delete")
+    public ResponseEntity<String> deleteMusic(
+
+            @RequestParam(required = false) Optional<String> nickname,
+            @RequestParam(required = false) Optional<Long> musicId
+
+    ){
+        musicListService.deleteMusic(nickname, musicId);
+        return ResponseEntity.ok().body("success");
+    }
+
+    @GetMapping("/update/{musicId}")
+    public UpdateMusicResDto getUpdateMusicPost(@PathVariable Long musicId){
+        log.info("update music id {}",musicId);
+        return musicListService.getUpdateMusic(musicId);
+    }
+    @PostMapping("/update/{musicId}")
+    public ResponseEntity<String> updateMusic(@PathVariable Long musicId, @RequestBody CreateNewMusicReqDto dto, BindingResult bindingResult){
+        log.info(bindingResult.toString());
+        log.warn("updateMusicReqDto : " + dto);
+        musicListService.updateMusic(musicId ,dto.title(), dto.singer(), dto.songWriter(), dto.postWriter(), dto.lyricWriter(), dto.remixArtist(), dto.released(), dto.videoId(), dto.country(), dto.genre(), dto.tags(),dto.lyric(), dto.lyricComment());
+        return ResponseEntity.ok("success");
+    }
+
 }

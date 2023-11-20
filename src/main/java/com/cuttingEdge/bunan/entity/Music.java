@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -20,17 +21,19 @@ public class Music {
     private String title;
     private String singer;
     private String songWriter;
+    private String lyricWriter;
+    private String postWriter;
+    private String remixArtist;
     private String videoId;
     private Long likes;
     private Long views;
     private String country;
     private String genre;
-    private String postWriter;
 
-    private Date released;
-    private Date posted;
-    private Date modified;
-    private Date deleted;
+    private LocalDate released;
+    private LocalDate posted;
+    private LocalDate modified;
+    private LocalDate deleted;
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
@@ -41,6 +44,19 @@ public class Music {
     }
     public void disLikes(){
         this.likes--;
+    }
+    public void update(String title,String singer, String songWriter,String lyricWriter,String remixArtist,LocalDate released,String videoId,String country,String genre){
+        this.title = title;
+        this.singer = singer;
+        this.songWriter = songWriter;
+        this.lyricWriter = lyricWriter;
+        this.remixArtist = remixArtist;
+        this.released = released;
+        this.videoId = videoId;
+        this.country = country;
+        this.genre = genre;
+
+
     }
 
 }

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-public record MusicListResDto(
+public record MusicPostResDto(
         Long id,
         String title,
         String singer,
@@ -12,7 +12,6 @@ public record MusicListResDto(
         String postWriter,
         String lyricWriter,
         String remixArtist,
-
         LocalDate released,
         LocalDate posted,
         LocalDate modified,

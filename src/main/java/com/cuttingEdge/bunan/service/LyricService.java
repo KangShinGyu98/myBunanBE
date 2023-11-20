@@ -39,14 +39,13 @@ public class LyricService {
             throw new AppException(ErrorCode.MUSICID_NOT_FOUND,"존재하지 않는 음악입니다.");
         }
 
-
         List<LyricResDto> result = lyricRepository.findAllByMusicIdOrderByOrderNumber(musicId).stream().map((l) -> {
-                List<LyricCommentResDto> comments = lyricCommentRepository.findAllByLyricIdOrderByLikes(l.getId()).get().stream().map( c->(
+                List<LyricCommentResDto> comments = lyricCommentRepository.findAllByLyricIdOrderByLikesDesc(l.getId()).stream().map( c->(
                         new LyricCommentResDto(c.getId(),c.getContent(),c.getLikes(),false,c.getDislikes(),c.getWriter(),c.getCreated())
                         )).collect(Collectors.toList());
                 return new LyricResDto(l.getId(), l.getContent(), l.getOrderNumber(), comments);
         }).collect(Collectors.toList());
-        log.info("result : " + result);
+//        log.info("result : " + result);
         return result;
     }
     public List<LyricResDto> getLyricsForUser(Long musicId,String nickname) { //music id
@@ -60,12 +59,12 @@ public class LyricService {
         log.info("likedLyricCommentIds {}" ,likedLyricCommentIds.stream().toList());
         //결과값 만들기,
         List<LyricResDto> result = lyricRepository.findAllByMusicIdOrderByOrderNumber(musicId).stream().map((l) -> {
-            List<LyricCommentResDto> comments = lyricCommentRepository.findAllByLyricIdOrderByLikes(l.getId()).get().stream().map( c->(
+            List<LyricCommentResDto> comments = lyricCommentRepository.findAllByLyricIdOrderByLikesDesc(l.getId()).stream().map( c->(
                     new LyricCommentResDto(c.getId(),c.getContent(),c.getLikes(),likedLyricCommentIds.contains(c.getId()),c.getDislikes(),c.getWriter(),c.getCreated())
             )).collect(Collectors.toList());
             return new LyricResDto(l.getId(), l.getContent(), l.getOrderNumber(), comments);
         }).collect(Collectors.toList());
-        log.info("result : " + result);
+//        log.info("result : " + result);
         return result;
     }
     List<Long> findLikedLyricCommentIdsByUserNickname(String nickname){
