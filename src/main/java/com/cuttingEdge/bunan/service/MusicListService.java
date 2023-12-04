@@ -232,6 +232,7 @@ public class MusicListService {
         if (!likeyOptional.isPresent()) {
             log.warn("likes +1 ");
             Likey newLikey = Likey.builder().music(music)
+                    .created(new Date())
                     .member(memberRepository.findById(memberID).get())
                     .build();
             likeyRepository.save(newLikey);

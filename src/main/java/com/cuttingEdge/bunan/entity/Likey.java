@@ -18,7 +18,7 @@ public class Likey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date created=new Date();
+    private Date created;
 
     @ManyToOne
     @JoinColumn(name = "music_id")
