@@ -18,7 +18,7 @@ public class LyricCommentLikey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date created=new Date();
+    private Date created;
 
     @ManyToOne
     @JoinColumn(name = "lyricComment_id")

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -93,6 +94,7 @@ public class LyricService {
         if (!likeyOptional.isPresent()) {
             log.warn("likes +1 ");
             LyricCommentLikey newLikey = LyricCommentLikey.builder().lyricComment(lyricComment)
+                    .created(new Date())
                     .member(memberRepository.findById(memberID).get())
                     .build();
             lyricCommentLikeyRepository.save(newLikey);
