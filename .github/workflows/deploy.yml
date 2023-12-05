@@ -46,8 +46,6 @@ jobs:
       - name: Set application.properties, keystore for main
         run: |
           # main 설정 파일 디렉토리로 이동
-          touch ./src/test/resources/application.properties
-          echo "${{ secrets.APPLICATION }}" >> ./src/test/resources/application.properties
           cd ./src/main/resources
           touch ./application.properties
           echo "${{ secrets.APPLICATION }}" >> ./application.properties
