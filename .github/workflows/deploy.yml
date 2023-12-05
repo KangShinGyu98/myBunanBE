@@ -51,6 +51,14 @@ jobs:
           echo "${{ secrets.APPLICATION }}" >> ./application.properties
         shell: bash
 
+      #DB 켜기
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8'
+          mysql database: 'bunandb'
+          mysql user: 'root'
+          mysql password: ${{ secrets.MYSQL_PASSWORD }} # github Secret 탭에서 설정하세요!
 
         
       # (3) Gradle build (Test 제외)
