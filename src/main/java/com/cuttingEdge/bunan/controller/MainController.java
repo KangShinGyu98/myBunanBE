@@ -18,8 +18,5 @@ public class MainController {
         return ResponseEntity.ok().body("Connected!\n");
     }
 
-    @GetMapping("/.well-known/acme-challenge/JcXf2dUuBq9Shp1k7NHiTF_bJOYCyenwGv22FNxkLFo")
-    public ResponseEntity<String> Cert(){
-        return ResponseEntity.ok().body("JcXf2dUuBq9Shp1k7NHiTF_bJOYCyenwGv22FNxkLFo.YNLihTHoolqwnCae8NEpUqxSpem5oemNPtqwhcAZK6U");
-    }
+
 }
