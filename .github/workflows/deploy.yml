@@ -53,13 +53,14 @@ jobs:
 
       #DB 켜기
       - name: Setup MySQL
-      - uses: mirromutth/mysql-action@v1.1
+        uses: mirromutth/mysql-action@v1.1
         with:
-          host port: 3306
-          container port: 3306
-          mysql database: 'bunandb'
-          mysql root password: ${{ secrets.MYSQL_PASSWORD }}
-        
+          mysql version: '8.0'
+          mysql database: 'bunandb' # Optional, default value is "test". The specified database which will be create
+          mysql root password: ${{ secrets.MYSQL_PASSWORD }} # Required if "mysql user" is empty, default is empty. The root superuser password
+          mysql user: 'root' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+          mysql password: ${{ secrets.MYSQL_PASSWORD }} # Required if "mysql user" exists. The password for the "mysql user"
+
       # (3) Gradle build (Test 제외)
       # Build
       - name: Build with Gradle
