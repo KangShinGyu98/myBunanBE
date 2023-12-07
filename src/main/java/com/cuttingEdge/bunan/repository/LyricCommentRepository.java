@@ -12,7 +12,6 @@ import java.util.Optional;
 @Repository
 public interface LyricCommentRepository extends JpaRepository<LyricComment,Long>{
     public List<LyricComment> findAllByLyricIdOrderByLikesDesc(Long lyricId);
-    public Optional<List<LyricComment>> findAllByMemberId(Long memberId);
     public Optional<LyricComment> findById(Long lyricCommentId);
 
 }

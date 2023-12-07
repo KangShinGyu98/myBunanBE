@@ -31,8 +31,9 @@ public class MusicController {
                                              @RequestParam(required = false) List<String> tags,
                                              @RequestParam(required = false) String email
     ) {
-//        todo email => nickname 으로 하는게 털렸을 때 덜 취약한듯?
+//        todo email => nickname 으로 하는게 털렸을 때 덜 취약한듯?, 그냥 전부 user id 로 통합하고, 대신에 여기는 security context 로 바꾸기
         if (ObjectUtils.isEmpty(email)){
+
 
             List<MusicListResDto> results = musicListService.getMusics(country, genre, ordering, search, tags);
             ApiDto<MusicListResDto> returnDto = new ApiDto(results);
@@ -85,9 +86,8 @@ public class MusicController {
         return lyricComment;
     }
     @PostMapping("/createNewMusic")
-    public ResponseEntity<String> createNewMusic(@RequestBody CreateNewMusicReqDto dto, BindingResult bindingResult){
-        log.info(bindingResult.toString());
-        log.warn("createNewMusicReqDto : " + dto);
+    public ResponseEntity<String> createNewMusic(@RequestBody CreateNewMusicReqDto dto){
+        log.info("createNewMusicReqDto : " + dto);
         musicListService.createNewMusic(dto.title(), dto.singer(), dto.songWriter(), dto.postWriter(), dto.lyricWriter(), dto.remixArtist(), dto.released(), dto.videoId(), dto.country(), dto.genre(), dto.tags(),dto.lyric(), dto.lyricComment());
         return ResponseEntity.ok("success");
     }
@@ -122,7 +122,7 @@ public class MusicController {
     @PostMapping("/update/{musicId}")
     public ResponseEntity<String> updateMusic(@PathVariable Long musicId, @RequestBody CreateNewMusicReqDto dto, BindingResult bindingResult){
         log.info(bindingResult.toString());
-        log.warn("updateMusicReqDto : " + dto);
+        log.info("updateMusicReqDto : " + dto);
         musicListService.updateMusic(musicId ,dto.title(), dto.singer(), dto.songWriter(), dto.postWriter(), dto.lyricWriter(), dto.remixArtist(), dto.released(), dto.videoId(), dto.country(), dto.genre(), dto.tags(),dto.lyric(), dto.lyricComment());
         return ResponseEntity.ok("success");
     }

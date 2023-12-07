@@ -89,14 +89,6 @@ public class MusicListService {
         return result;
     }
 
-    public String getVideoId(Long id) {
-        if (musicRepository.findById(id).isEmpty()) {
-            return null;
-        }
-        return musicRepository.findById(id).get().getVideoId();
-    }
-
-
     // music id에 해당하는 Lyrics 를 order 순으로 반환 하면서, Lyric에 맞는 comment 를 좋아요 순으로 반환
 
 
@@ -209,7 +201,7 @@ public class MusicListService {
     List<Long> findLikedMusicIdsByUserEmail(String email){
 
         Long memberId = memberRepository.findByEmail(email).get().getId();
-        List<Long> likedMusicIds =  likeyRepository.findAllByMemberId(memberId).get().stream().map(m->m.getMusic().getId()).collect(Collectors.toList());
+        List<Long> likedMusicIds =  likeyRepository.findAllByMemberId(memberId).stream().map(m->m.getMusic().getId()).collect(Collectors.toList());
         return likedMusicIds;
     }
 
@@ -219,7 +211,7 @@ public class MusicListService {
         Music music = musicRepository.findById(musicId).get();
         Optional<Likey> likeyOptional = likeyRepository.findByMemberIdAndMusicId(memberID, musicId);
         likeyOptional.ifPresent(likey -> {
-            log.warn("likes -1 ");
+            log.info("likes -1 ");
             // Likey가 존재하는 경우, 삭제
             likeyRepository.delete(likey);
             music.disLikes();
@@ -230,7 +222,7 @@ public class MusicListService {
         });
 // Likey가 없는 경우, 생성 (또는 다른 작업 수행)
         if (!likeyOptional.isPresent()) {
-            log.warn("likes +1 ");
+            log.info("likes +1 ");
             Likey newLikey = Likey.builder().music(music)
                     .created(new Date())
                     .member(memberRepository.findById(memberID).get())
@@ -240,7 +232,7 @@ public class MusicListService {
             musicRepository.save(music);
             log.info("music id : {}, music name : {}, music liked: {}, music likes : {}",music.getId(),music.getTitle(), music.getLikes());
 
-            log.warn("likes now : {}",musicRepository.findById(musicId).get().getLikes().toString());
+            log.info("likes now : {}",musicRepository.findById(musicId).get().getLikes().toString());
             // Likey 생성 또는 다른 작업 수행
             return;
         }
@@ -266,31 +258,26 @@ public class MusicListService {
         log.info("current nickname : {} auth : {}", currentEmail,authentication.toString());
 
         // musicId를 사용하여 Music 엔티티 조회
-        Optional<Music> musicOptional = musicRepository.findById(musicId);
+        Music music = musicRepository.findById(musicId).orElseThrow(() -> new AppException(ErrorCode.MUSICID_NOT_FOUND,"없는 음악 포스트 입니다."));
 
-        if (musicOptional.isPresent()) {
-            Music music = musicOptional.get();
-            // Music 엔티티의 postWriter와 현재 사용자의 닉네임 비교
-            if (music.getPostWriter().equals(postWriter)) {
-                List<Lyric> lyrics = lyricRepository.findAllByMusicIdOrderByOrderNumber(musicId);
-
-                String mergedLyrics = lyrics.stream()
-                        .map(lyric -> lyric.getContent())
-                        .collect(Collectors.joining("\n\n"));
-                String mergedLyricComments = lyrics.stream().map(lyric -> {
-                    return lyricCommentRepository.findAllByLyricIdOrderByLikesDesc(lyric.getId()).get(0).getContent();
-                }).collect(Collectors.joining("\n\n"));
-
-                log.info("req update LyricWriter : {} RemixArtist : {}  Released : {}", music.getLyricWriter(),music.getRemixArtist(),music.getReleased().toString());
-                return new UpdateMusicResDto(music.getTitle(),music.getSinger(),music.getSongWriter(),music.getPostWriter(),music.getLyricWriter(),music.getRemixArtist(),music.getReleased(),music.getVideoId(),music.getCountry(),music.getGenre(),new ArrayList<String>(),mergedLyrics,mergedLyricComments);
-            } else {
-                // postWriter와 현재 사용자가 일치하지 않는 경우에 대한 처리
-                throw new AppException(ErrorCode.INVALID_USER,"잘못된 사용자 입니다.");
-            }
-        } else {
-            throw new AppException(ErrorCode.MUSICID_NOT_FOUND,"없는 음악 포스트 입니다.");
-            // musicId에 해당하는 레코드가 없는 경우에 대한 처리
-            // ...
+        // Music 엔티티의 postWriter와 현재 사용자의 닉네임 비교
+        if (!music.getPostWriter().equals(postWriter)) {
+            // postWriter와 현재 사용자가 일치하지 않는 경우에 대한 처리
+            throw new AppException(ErrorCode.INVALID_USER,"잘못된 사용자 입니다.");
         }
+
+        List<Lyric> lyrics = lyricRepository.findAllByMusicIdOrderByOrderNumber(musicId);
+
+        String mergedLyrics = lyrics.stream()
+                .map(Lyric::getContent)
+                .collect(Collectors.joining("\n\n"));
+        String mergedLyricComments = lyrics.stream().map(lyric -> {
+            return lyricCommentRepository.findAllByLyricIdOrderByLikesDesc(lyric.getId()).get(0).getContent();
+        }).collect(Collectors.joining("\n\n"));
+
+        log.info("req update LyricWriter : {} RemixArtist : {}  Released : {}", music.getLyricWriter(),music.getRemixArtist(),music.getReleased().toString());
+        return new UpdateMusicResDto(music.getTitle(),music.getSinger(),music.getSongWriter(),music.getPostWriter(),music.getLyricWriter(),music.getRemixArtist(),music.getReleased(),music.getVideoId(),music.getCountry(),music.getGenre(),new ArrayList<String>(),mergedLyrics,mergedLyricComments);
+
+
     }
 }

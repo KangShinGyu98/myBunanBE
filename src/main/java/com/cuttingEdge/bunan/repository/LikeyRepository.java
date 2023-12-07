@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface LikeyRepository extends JpaRepository<Likey,Long>{
-    Optional<List<Likey>> findAllByMemberId(Long memberId);
-    Optional<List<Likey>> findAllByMusicId(Long musicId);
+    List<Likey> findAllByMemberId(Long memberId);
     Optional<Likey> findByMemberIdAndMusicId(Long memberId, Long musicId);
 }

@@ -71,7 +71,7 @@ public class LyricService {
     List<Long> findLikedLyricCommentIdsByUserNickname(String nickname){
 
         Long memberId = memberRepository.findByNickname(nickname).get().getId();
-        List<Long> likedLyricCommentIds =  lyricCommentLikeyRepository.findAllByMemberId(memberId).get().stream().map(cl -> cl.getLyricComment().getId() ).collect(Collectors.toList());
+        List<Long> likedLyricCommentIds =  lyricCommentLikeyRepository.findAllByMemberId(memberId).stream().map(cl -> cl.getLyricComment().getId() ).collect(Collectors.toList());
         return likedLyricCommentIds;
     }
 
@@ -81,7 +81,7 @@ public class LyricService {
         LyricComment lyricComment = lyricCommentRepository.findById(lyricCommentId).get();
         Optional<LyricCommentLikey> likeyOptional = lyricCommentLikeyRepository.findByLyricCommentIdAndMemberId(lyricCommentId,memberID);
         likeyOptional.ifPresent(likey -> {
-            log.warn("likes -1 ");
+            log.info("likes -1 ");
             // Likey가 존재하는 경우, 삭제
             lyricCommentLikeyRepository.delete(likey);
             lyricComment.undoLike();
@@ -92,7 +92,7 @@ public class LyricService {
 // Likey가 없는 경우, 생성 (또는 다른 작업 수행)
 
         if (!likeyOptional.isPresent()) {
-            log.warn("likes +1 ");
+            log.info("likes +1 ");
             LyricCommentLikey newLikey = LyricCommentLikey.builder().lyricComment(lyricComment)
                     .created(new Date())
                     .member(memberRepository.findById(memberID).get())
@@ -102,7 +102,7 @@ public class LyricService {
             lyricCommentRepository.save(lyricComment);
             log.info("lyricComent id : {}, lyricComment content : {}, lyricComment liked: {}, lyricComment likes : {}",lyricComment.getId(),lyricComment.getContent(), lyricComment.getLikes());
 
-            log.warn("likes now : {}",lyricCommentRepository.findById(lyricCommentId).get().getLikes().toString());
+            log.info("likes now : {}",lyricCommentRepository.findById(lyricCommentId).get().getLikes().toString());
             // Likey 생성 또는 다른 작업 수행
         }
     }

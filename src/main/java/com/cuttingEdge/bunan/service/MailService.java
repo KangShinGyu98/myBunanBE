@@ -26,6 +26,7 @@ public class MailService {
     private String senderEmail;
 
     private final ConcurrentHashMap<String, EmailVerificationInfo> verificationMap = new ConcurrentHashMap<>();
+    //todo 30분 이후에는 맵에서 지우도록 해야됨 => 메모리관리
 
     public void sendMail(String mail){
         MimeMessage message = CreateMail(mail);
