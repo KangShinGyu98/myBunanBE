@@ -40,6 +40,9 @@ public class SecurityConfig {
                 .cors().configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(Arrays.asList("https://my-bunan-f2h9wqsfw-kangshingyus-projects.vercel.app","https://www.bunan.co.kr"));
+                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE","PATCH","OPTIONS"));
+                    config.setAllowedHeaders(Arrays.asList("*"));
+
                     return config;
                 })
                 .and()
