@@ -5,6 +5,7 @@ import com.cuttingEdge.bunan.config.jwt.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -44,6 +45,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
 //                .antMatchers(HttpMethod.POST, "/**").authenticated()
 //                .antMatchers(HttpMethod.GET, "/api/**").authenticated()
 //                .antMatchers(HttpMethod.PATCH, "/api/**").authenticated()
