@@ -41,7 +41,7 @@ public class MusicController {
         }else{
 // 로그인 한 사용자의 경우
 //            todo token 값을 통해서 validation user 랑 email 이랑 실제로 같은지 체크할 것 
-            List<MusicListResDto> results = musicListService.getMusicsForUser(country, genre, ordering, search, tags,email);
+            List<MusicListResDto> results = musicListService.getMusics(country, genre, ordering, search, tags,email);
             ApiDto<MusicListResDto> returnDto = new ApiDto(results);
             return returnDto;// 예제로 모든 음악을 반환
         }

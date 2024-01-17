@@ -62,7 +62,7 @@ public class MusicListService {
 
         return result;
     }
-    public List<MusicListResDto> getMusicsForUser(String country, String genre, String ordering, String search, List<String> tags, String email){
+    public List<MusicListResDto> getMusics(String country, String genre, String ordering, String search, List<String> tags, String email){
         log.info("getMusicsForUser : {}",email);
 // 현재 사용자가 좋아요한 음악의 ID 목록을 가져옵니다.
         List<Long> likedMusicIds = findLikedMusicIdsByUserEmail(email);
