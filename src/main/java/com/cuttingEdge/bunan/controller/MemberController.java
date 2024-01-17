@@ -50,11 +50,11 @@ public class MemberController {
         memberService.nicknameCheck(dto.nickname());
         return ResponseEntity.ok().body( dto.nickname()+" 은 사용 가능한 닉네임 입니다.");
     }
-    @GetMapping("/resetDB")
-    public ResponseEntity<String> reset() {
-
-        return ResponseEntity.ok().body("DB 리셋이 완료되었습니다.");
-    }
+//    @GetMapping("/resetDB")
+//    public ResponseEntity<String> reset() {
+//
+//        return ResponseEntity.ok().body("DB 리셋이 완료되었습니다.");
+//    }
 
 
 }
