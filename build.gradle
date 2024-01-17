@@ -47,6 +47,9 @@ dependencies {
 
 	annotationProcessor 'org.projectlombok:lombok'
 
+	//Swagger
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.9'
+
 	// queryDSL 3추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
