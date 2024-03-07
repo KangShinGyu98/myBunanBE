@@ -22,7 +22,10 @@ public class MusicController {
 
     private final MusicListService musicListService;
     private final LyricService lyricService;
-
+    @GetMapping("/.well-known/acme-challenge/xlAcHWi6J8SZ0YOhurSfKzG8gCFl-z23roVuLHHekQ0")
+    public String cert(){
+        return "xlAcHWi6J8SZ0YOhurSfKzG8gCFl-z23roVuLHHekQ0.YNLihTHoolqwnCae8NEpUqxSpem5oemNPtqwhcAZK6U";
+    }
     @GetMapping("/musics") //메인화면에서 모든 음악포스트를 반환
     public ApiDto<MusicListResDto> getMusics(@RequestParam(required = false) String country,
                                              @RequestParam(required = false) String genre,
