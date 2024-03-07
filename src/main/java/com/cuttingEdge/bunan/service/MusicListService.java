@@ -121,7 +121,7 @@ public class MusicListService {
                     .music(newMusic)
                     .build();
             lyricRepository.save(newLyric);
-            if(lyricComments.size()>i){
+            if(lyricComments != null && lyricComments.size()>i){
                 LyricComment newLyricComment = new LyricComment();
                 newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter, member);
                 lyricCommentRepository.save(newLyricComment);
