@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -22,6 +23,9 @@ public class Lyric {
     @ManyToOne
     @JoinColumn(name = "music_id")
     private Music music;
+
+    @OneToMany(mappedBy = "lyric", cascade = CascadeType.ALL)
+    private List<LyricComment> comments;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

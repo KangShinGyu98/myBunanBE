@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,6 +30,9 @@ public class Music {
     private Long views;
     private String country;
     private String genre;
+
+    @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
+    private List<Lyric> lyrics;
 
     private LocalDate released;
     private LocalDate posted;
