@@ -113,6 +113,7 @@ public class MusicListService {
                 .likes(0L)
                 .build();
         musicRepository.save(newMusic);
+
         for (int i=0; i<lyrics.size(); i++) {
             Lyric newLyric = Lyric.builder()
                     .content(lyrics.get(i))
@@ -120,19 +121,16 @@ public class MusicListService {
                     .music(newMusic)
                     .build();
             lyricRepository.save(newLyric);
-            LyricComment newLyricComment = new LyricComment();
-            newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter, member);
-            lyricCommentRepository.save(newLyricComment);
+            if(lyricComments.size()>i){
+                LyricComment newLyricComment = new LyricComment();
+                newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter, member);
+                lyricCommentRepository.save(newLyricComment);
+            }
         }
     }
 
-    public void updateMusic(Long musicId,String title, String singer, String songWriter, String postWriter,String lyricWriter,String remixArtist , LocalDate released, String videoId, String country, String genre, List<String> tags, List<String> lyrics, List<String> lyricComments) {
-//        musicId 도 받아오고
-//        security context 에서 닉네임 가져오고
-//        postwriter랑 비교도 하고 닉네임이니까
-//        set 하고
-//        save 하고
-//        react 에서 toast도 해주고
+    public void updateMusic(Long musicId,String title, String singer, String songWriter, String postWriter,String lyricWriter,String remixArtist , LocalDate released, String videoId, String country, String genre, List<String> tags, List<String> lyrics) {
+
         // 현재 사용자의 인증 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -154,43 +152,38 @@ public class MusicListService {
         List<Lyric> existedLyrics = lyricRepository.findAllByMusicIdOrderByOrderNumber(musicId);
 
         log.info(" existed Lyrics : {}",existedLyrics.toString());
+
 //      기존의 lyric 이랑 새로 들어오는 lyric 이랑 길이가 다를 수 있다.
 //      새 lyrics 를 기준으로 기존의 lyric을 업데이트 하지만 새 lyric 이 더 길면 새 lyric을 만들면 되고,
 //      기존의 lyric이 더 길면 남는 만큼 삭제하자
 
         if (existedLyrics.size() >= lyrics.size()){
+
+            for (int i=0; i< lyrics.size(); i++){
+                Lyric ithLyric = existedLyrics.get(i);
+                ithLyric.update(lyrics.get(i));
+                lyricRepository.save(ithLyric);
+
+            }
+            for (int i =lyrics.size();i<existedLyrics.size();i++){
+                lyricRepository.delete(existedLyrics.get(i));
+            }
+
+        }else{
+
             for (int i=0; i<existedLyrics.size(); i++){
                 Lyric ithLyric = existedLyrics.get(i);
-                if (i>=lyrics.size()){
-                    lyricRepository.delete(ithLyric);
-                }else {
-                    ithLyric.update(lyrics.get(i),music);
-                    lyricRepository.save(ithLyric);
-                    LyricComment newLyricComment = new LyricComment();
-                    newLyricComment.setNewLyricComment(ithLyric, lyricComments.get(i), postWriter, member);
-                    lyricCommentRepository.save(newLyricComment);
-                }
+                ithLyric.update(lyrics.get(i));
+                lyricRepository.save(ithLyric);
             }
-        }else{
-            for (int i=0; i<lyrics.size(); i++){
-                Lyric ithLyric = existedLyrics.get(i);
-                if (i>=lyrics.size()){
-                    Lyric newLyric = Lyric.builder()
-                            .content(lyrics.get(i))
-                            .orderNumber(i)
-                            .music(music)
-                            .build();
-                    lyricRepository.save(newLyric);
-                    LyricComment newLyricComment = new LyricComment();
-                    newLyricComment.setNewLyricComment(newLyric, lyricComments.get(i), postWriter, member);
-                    lyricCommentRepository.save(newLyricComment);
-                }else {
-                    ithLyric.update(lyrics.get(i),music);
-                    lyricRepository.save(ithLyric);
-                    LyricComment newLyricComment = new LyricComment();
-                    newLyricComment.setNewLyricComment(ithLyric, lyricComments.get(i), postWriter, member);
-                    lyricCommentRepository.save(newLyricComment);
-                }
+            for(int i = existedLyrics.size();i< lyrics.size();i++){
+                Lyric newLyric = Lyric.builder()
+                        .content(lyrics.get(i))
+                        .orderNumber(i)
+                        .music(music)
+                        .build();
+                lyricRepository.save(newLyric);
+
             }
 
         }
@@ -230,9 +223,9 @@ public class MusicListService {
             likeyRepository.save(newLikey);
             music.likes();
             musicRepository.save(music);
-            log.info("music id : {}, music name : {}, music liked: {}, music likes : {}",music.getId(),music.getTitle(), music.getLikes());
-
-            log.info("likes now : {}",musicRepository.findById(musicId).get().getLikes().toString());
+//            log.info("music id : {}, music name : {}, music liked: {}, music likes : {}",music.getId(),music.getTitle(), music.getLikes());
+//
+//            log.info("likes now : {}",musicRepository.findById(musicId).get().getLikes().toString());
             // Likey 생성 또는 다른 작업 수행
             return;
         }
@@ -255,7 +248,7 @@ public class MusicListService {
         String currentEmail = authentication.getName();
         String postWriter = memberRepository.findByEmail(currentEmail).get().getNickname();
 
-        log.info("current nickname : {} auth : {}", currentEmail,authentication.toString());
+//        log.info("current nickname : {} auth : {}", currentEmail,authentication.toString());
 
         // musicId를 사용하여 Music 엔티티 조회
         Music music = musicRepository.findById(musicId).orElseThrow(() -> new AppException(ErrorCode.MUSICID_NOT_FOUND,"없는 음악 포스트 입니다."));
@@ -271,12 +264,9 @@ public class MusicListService {
         String mergedLyrics = lyrics.stream()
                 .map(Lyric::getContent)
                 .collect(Collectors.joining("\n\n"));
-        String mergedLyricComments = lyrics.stream().map(lyric -> {
-            return lyricCommentRepository.findAllByLyricIdOrderByLikesDesc(lyric.getId()).get(0).getContent();
-        }).collect(Collectors.joining("\n\n"));
 
-        log.info("req update LyricWriter : {} RemixArtist : {}  Released : {}", music.getLyricWriter(),music.getRemixArtist(),music.getReleased().toString());
-        return new UpdateMusicResDto(music.getTitle(),music.getSinger(),music.getSongWriter(),music.getPostWriter(),music.getLyricWriter(),music.getRemixArtist(),music.getReleased(),music.getVideoId(),music.getCountry(),music.getGenre(),new ArrayList<String>(),mergedLyrics,mergedLyricComments);
+//        log.info("req update LyricWriter : {} RemixArtist : {}  Released : {}", music.getLyricWriter(),music.getRemixArtist(),music.getReleased().toString());
+        return new UpdateMusicResDto(music.getTitle(),music.getSinger(),music.getSongWriter(),music.getPostWriter(),music.getLyricWriter(),music.getRemixArtist(),music.getReleased(),music.getVideoId(),music.getCountry(),music.getGenre(),new ArrayList<String>(),mergedLyrics);
 
 
     }

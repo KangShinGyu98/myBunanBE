@@ -16,8 +16,8 @@ public record UpdateMusicResDto(
         String country,
         String genre,
         List<String> tags,
-        String lyric,
-        String lyricComment
+        String lyric
+//        String lyricComment
 
 ) {
 }

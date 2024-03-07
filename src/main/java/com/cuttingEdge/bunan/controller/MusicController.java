@@ -116,14 +116,14 @@ public class MusicController {
 
     @GetMapping("/update/{musicId}")
     public UpdateMusicResDto getUpdateMusicPost(@PathVariable Long musicId){
-        log.info("update music id {}",musicId);
+//        log.info("update music id {}",musicId);
         return musicListService.getUpdateMusic(musicId);
     }
     @PostMapping("/update/{musicId}")
     public ResponseEntity<String> updateMusic(@PathVariable Long musicId, @RequestBody CreateNewMusicReqDto dto, BindingResult bindingResult){
-        log.info(bindingResult.toString());
-        log.info("updateMusicReqDto : " + dto);
-        musicListService.updateMusic(musicId ,dto.title(), dto.singer(), dto.songWriter(), dto.postWriter(), dto.lyricWriter(), dto.remixArtist(), dto.released(), dto.videoId(), dto.country(), dto.genre(), dto.tags(),dto.lyric(), dto.lyricComment());
+//        log.info(bindingResult.toString());
+//        log.info("updateMusicReqDto : " + dto);
+        musicListService.updateMusic(musicId ,dto.title(), dto.singer(), dto.songWriter(), dto.postWriter(), dto.lyricWriter(), dto.remixArtist(), dto.released(), dto.videoId(), dto.country(), dto.genre(), dto.tags(),dto.lyric());
         return ResponseEntity.ok("success");
     }
 

@@ -30,8 +30,8 @@ public class Lyric {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-    public void update(String content,Music music){
+    public void update(String content){
         this.content = content;
-        this.music = music;
+
     }
 }
