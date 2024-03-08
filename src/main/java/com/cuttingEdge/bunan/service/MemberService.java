@@ -102,12 +102,17 @@ public class MemberService {
         String password = dto.password();
         String passwordCheck = dto.passwordCheck();
         String nickname = dto.nickname();
+        String email = dto.email();
 
         // password 일치 check
         if (!password.equals(passwordCheck)){
             throw new AppException(ErrorCode.PASSWORD_NOT_MATCHED, "비밀번호가 일치하지 않습니다.");
         }
-        // membername check
+        // membername, email 중복 check
+        if (memberRepository.existsMemberByEmail(email)){
+            throw new AppException(ErrorCode.EMAIL_DUPLICATED, email + "은(는) 이미 존재합니다.");
+        }
+
         if (memberRepository.existsMemberByNickname(nickname)){
             throw new AppException(ErrorCode.NICKNAME_DUPLICATED, nickname + "은(는) 이미 존재합니다.");
         }
@@ -117,6 +122,7 @@ public class MemberService {
 
         // 저장
         Member member = Member.builder()
+                .email(email)
                 .nickname(nickname)
                 .password(encoder.encode(password))
                 .role(Role.ADMIN)
