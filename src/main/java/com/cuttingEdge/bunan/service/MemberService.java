@@ -63,7 +63,7 @@ public class MemberService {
         }
         log.info("로그인 성공 : {} ",selectedMember.getNickname());
 
-        String token = jwtUtil.createToken(selectedMember.getEmail(),selectedMember.getNickname());
+        String token = jwtUtil.createToken(selectedMember.getEmail(),selectedMember.getNickname(),selectedMember.getRole().name());
         // 앞에서 Exception 안났으면 토큰 발행
         log.info("토큰 발행 성공");
         

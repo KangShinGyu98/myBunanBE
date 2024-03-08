@@ -1,5 +1,6 @@
 package com.cuttingEdge.bunan.config.jwt;
 
+import com.cuttingEdge.bunan.constant.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,11 +27,11 @@ public class JwtUtil {
                 .getBody().getExpiration().before(new Date());
     }
 
-    public String createToken(String email, String nickname) {
+    public String createToken(String email, String nickname, String role) {
         Claims claims = Jwts.claims(); //일종의 map
         claims.put("email", email);
         claims.put("nickname", nickname);
-
+        claims.put("role",role);
 
         return Jwts.builder()
                 .setClaims(claims)
