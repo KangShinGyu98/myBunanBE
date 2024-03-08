@@ -1,10 +1,7 @@
 package com.cuttingEdge.bunan.controller;
 
 
-import com.cuttingEdge.bunan.dto.MemberJoinReqDto;
-import com.cuttingEdge.bunan.dto.MemberLoginReqDto;
-import com.cuttingEdge.bunan.dto.MemberNicknameCheckDto;
-import com.cuttingEdge.bunan.dto.VerifyEmailReqDto;
+import com.cuttingEdge.bunan.dto.*;
 import com.cuttingEdge.bunan.service.MailService;
 import com.cuttingEdge.bunan.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +52,10 @@ public class MemberController {
 //
 //        return ResponseEntity.ok().body("DB 리셋이 완료되었습니다.");
 //    }
+    @PostMapping("/createAdmin")
+    public ResponseEntity<String> createAdmin(@RequestBody @Valid CreateAdminReqDto dto){
 
+        return ResponseEntity.ok().body(memberService.createAdmin(dto));
+    }
 
 }

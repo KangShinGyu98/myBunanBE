@@ -2,11 +2,13 @@ package com.cuttingEdge.bunan.config.jwt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Filter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
+@Component
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;

@@ -105,12 +105,9 @@ public class MusicController {
 
     @DeleteMapping("/music/delete")
     public ResponseEntity<String> deleteMusic(
-
-            @RequestParam(required = false) Optional<String> nickname,
             @RequestParam(required = false) Optional<Long> musicId
-
     ){
-        musicListService.deleteMusic(nickname, musicId);
+        musicListService.deleteMusic( musicId);
         return ResponseEntity.ok().body("success");
     }
 

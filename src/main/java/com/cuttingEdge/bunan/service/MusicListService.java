@@ -1,5 +1,6 @@
 package com.cuttingEdge.bunan.service;
 
+import com.cuttingEdge.bunan.constant.Role;
 import com.cuttingEdge.bunan.dto.LyricResDto;
 import com.cuttingEdge.bunan.dto.MusicListResDto;
 import com.cuttingEdge.bunan.dto.MusicPostResDto;
@@ -231,14 +232,25 @@ public class MusicListService {
         }
     }
 
-    public void deleteMusic( Optional<String> nickname, Optional<Long> musicId){
-        if (!nickname.isPresent()) throw new AppException(ErrorCode.INVALID_EMAIL,"존재하지 않는 이메일 입니다.");
+    public void deleteMusic(Optional<Long> musicId){
+        // 현재 사용자의 인증 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null ) {
+            throw new AppException(ErrorCode.USERNAME_NOT_FOUND,"올바르지 않은 사용자입니다.");
+        }
+        Member member = (Member) authentication.getPrincipal();
+        log.info("security context member : "+member.getNickname());
+        if(member.getRole()== Role.ADMIN || member.getRole() == Role.MANAGER) {
+            musicRepository.deleteById(musicId.get());
+            return;
+        }
         if (!musicRepository.existsById(musicId.get())) throw new AppException(ErrorCode.MUSICID_NOT_FOUND,"존재하지 않는 포스트 ID 입니다.");
-        if (!nickname.get().equals(musicRepository.findById(musicId.get()).get().getPostWriter())) throw new AppException(ErrorCode.INVALID_USER,"음악을 포스트한 사용자가 아닙니다.");
+        if (!member.getNickname().equals(musicRepository.findById(musicId.get()).get().getPostWriter())) throw new AppException(ErrorCode.INVALID_USER,"음악을 포스트한 사용자가 아닙니다.");
 
         musicRepository.deleteById(musicId.get());
 
     }
+
 
     public UpdateMusicResDto getUpdateMusic(Long musicId) {
         // 현재 사용자의 인증 정보 가져오기

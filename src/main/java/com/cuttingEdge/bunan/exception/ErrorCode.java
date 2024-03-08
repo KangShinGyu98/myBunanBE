@@ -17,6 +17,7 @@ public enum ErrorCode {
     MUSICID_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 음악입니다."),
     INVALID_EMAIL(HttpStatus.BAD_REQUEST, "비정상적인 이메일 요청입니다."),
     INVALID_USER(HttpStatus.BAD_REQUEST, "비정상적인 사용자 요청입니다.");
+
     private HttpStatus httpStatus;
     private String message;
 }
