@@ -35,8 +35,9 @@ public class LyricComment {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-    @OneToMany(mappedBy = "LYRIC_COMMENT", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "lyricComment", cascade = CascadeType.ALL)
     private List<LyricCommentLikey> lyricCommentLikeys;
+
     public void setNewLyricComment(Lyric lyric, String content, String writer, Member member) {
         this.content = content;
         this.likes = 0;
