@@ -26,13 +26,15 @@ public class LyricService {
     private final MemberRepository memberRepository;
     private final MusicRepository musicRepository;
     private final LyricCommentLikeyRepository lyricCommentLikeyRepository;
-    public LyricComment saveLyricComment( Long lyricId,String content, String writer) {
+    public LyricCommentResDto saveLyricComment( Long lyricId,String content, String writer) {
 
         LyricComment lyricComment = new LyricComment();
         Lyric lyric = lyricRepository.findById(lyricId).orElseThrow(()->new IllegalArgumentException("해당 가사가 없습니다."));
         lyricComment.setNewLyricComment( lyric, content, writer, memberRepository.findByNickname(writer).get());
         lyricCommentRepository.save(lyricComment);
-        return lyricComment;
+        LyricCommentResDto res = new LyricCommentResDto(lyricComment.getId(),content,0,false,0,writer,lyricComment.getCreated());
+
+        return res;
     }
     public List<LyricResDto> getLyrics(Long musicId) { //music id
         //존재하는 음악인지 musicID 체크

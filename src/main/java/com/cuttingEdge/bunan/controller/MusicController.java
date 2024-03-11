@@ -80,10 +80,10 @@ public class MusicController {
     }
 
     @PostMapping("/lyricInput")
-    public LyricComment lyricInput(@RequestBody LyricInputReqDto dto){
+    public LyricCommentResDto lyricInput(@RequestBody LyricInputReqDto dto){
         log.info("lyricInputReqDto : " + dto);
-        LyricComment lyricComment= lyricService.saveLyricComment(dto.lyricId().longValue(), dto.content(), dto.writer());
-        return lyricComment;
+        return lyricService.saveLyricComment(dto.lyricId().longValue(), dto.content(), dto.writer());
+
     }
     @PostMapping("/createNewMusic")
     public ResponseEntity<String> createNewMusic(@RequestBody CreateNewMusicReqDto dto){

@@ -15,5 +15,6 @@ public record LyricCommentResDto(
         String writer,
         Date created
 ) {
+
 }
 
