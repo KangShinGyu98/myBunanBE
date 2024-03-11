@@ -241,11 +241,12 @@ public class MusicListService {
             throw new AppException(ErrorCode.USERNAME_NOT_FOUND,"올바르지 않은 사용자입니다.");
         }
         Member member = (Member) authentication.getPrincipal();
-        log.info("security context member : "+member.getNickname());
+        log.info("security context member nickname : "+member.getNickname());
         if(member.getAuthorities().contains(Permission.MANAGER_DELETE)) {
             musicRepository.deleteById(musicId.get());
             return;
         }
+
         if (!musicRepository.existsById(musicId.get())) throw new AppException(ErrorCode.MUSICID_NOT_FOUND,"존재하지 않는 포스트 ID 입니다.");
         if (!member.getNickname().equals(musicRepository.findById(musicId.get()).get().getPostWriter())) throw new AppException(ErrorCode.INVALID_USER,"음악을 포스트한 사용자가 아닙니다.");
 
