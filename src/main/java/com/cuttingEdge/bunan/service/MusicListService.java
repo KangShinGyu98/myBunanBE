@@ -242,7 +242,7 @@ public class MusicListService {
         }
         Member member = (Member) authentication.getPrincipal();
         log.info("security context member : "+member.getNickname());
-        if(authentication.getAuthorities().contains(Permission.MANAGER_DELETE)) {
+        if(member.getAuthorities().contains(Permission.MANAGER_DELETE)) {
             musicRepository.deleteById(musicId.get());
             return;
         }
