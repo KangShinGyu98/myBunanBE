@@ -1,5 +1,6 @@
 package com.cuttingEdge.bunan.service;
 
+import com.cuttingEdge.bunan.constant.Permission;
 import com.cuttingEdge.bunan.constant.Role;
 import com.cuttingEdge.bunan.dto.LyricResDto;
 import com.cuttingEdge.bunan.dto.MusicListResDto;
@@ -12,6 +13,7 @@ import com.cuttingEdge.bunan.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -133,15 +135,15 @@ public class MusicListService {
     public void updateMusic(Long musicId,String title, String singer, String songWriter, String postWriter,String lyricWriter,String remixArtist , LocalDate released, String videoId, String country, String genre, List<String> tags, List<String> lyrics) {
 
         // 현재 사용자의 인증 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authenticationToken = SecurityContextHolder.getContext().getAuthentication();
+        Member member = (Member) authenticationToken.getPrincipal();
 
         // 현재 사용자의 닉네임 가져오기
-        String currentEmail = authentication.getName();
-        String currentNickname = memberRepository.findByEmail(currentEmail).get().getNickname();
+        String currentNickname = member.getNickname();
 
         //music, member 선언
         Music music = musicRepository.findById(musicId).orElseThrow(()-> new AppException(ErrorCode.MUSICID_NOT_FOUND,"없는 음악 포스트 입니다."));
-        Member member = memberRepository.findByEmail(currentEmail).orElseThrow(()-> new AppException(ErrorCode.INVALID_EMAIL,"잘못된 유저 입니다."));
+//        Member member = memberRepository.findByEmail(currentEmail).orElseThrow(()-> new AppException(ErrorCode.INVALID_EMAIL,"잘못된 유저 입니다."));
 
         // Music 엔티티의 postWriter와 현재 사용자의 닉네임 비교
         if (!music.getPostWriter().equals(currentNickname)) {
@@ -240,7 +242,7 @@ public class MusicListService {
         }
         Member member = (Member) authentication.getPrincipal();
         log.info("security context member : "+member.getNickname());
-        if(member.getRole()== Role.ADMIN || member.getRole() == Role.MANAGER) {
+        if(authentication.getAuthorities().contains(Permission.MANAGER_DELETE)) {
             musicRepository.deleteById(musicId.get());
             return;
         }
@@ -255,10 +257,12 @@ public class MusicListService {
     public UpdateMusicResDto getUpdateMusic(Long musicId) {
         // 현재 사용자의 인증 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+        if (authentication == null ) {
+            throw new AppException(ErrorCode.USERNAME_NOT_FOUND,"올바르지 않은 사용자입니다.");
+        }
+        Member member = (Member) authentication.getPrincipal();
         // 현재 사용자의 닉네임 가져오기
-        String currentEmail = authentication.getName();
-        String postWriter = memberRepository.findByEmail(currentEmail).get().getNickname();
+
 
 //        log.info("current nickname : {} auth : {}", currentEmail,authentication.toString());
 
@@ -266,7 +270,7 @@ public class MusicListService {
         Music music = musicRepository.findById(musicId).orElseThrow(() -> new AppException(ErrorCode.MUSICID_NOT_FOUND,"없는 음악 포스트 입니다."));
 
         // Music 엔티티의 postWriter와 현재 사용자의 닉네임 비교
-        if (!music.getPostWriter().equals(postWriter)) {
+        if (!music.getPostWriter().equals(member.getNickname())) {
             // postWriter와 현재 사용자가 일치하지 않는 경우에 대한 처리
             throw new AppException(ErrorCode.INVALID_USER,"잘못된 사용자 입니다.");
         }

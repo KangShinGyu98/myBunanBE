@@ -7,6 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,6 +26,7 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -32,28 +35,25 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // 잘못된 token block
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-
-            log.error("잘못된 authorization 입니다.");
             filterChain.doFilter(request, response);
             return;
         }
-
         // token 꺼내기
-        String token = authorization.split(" ")[1];
+        String token = authorization.substring(7);
 
         // token expired 여부
         if (jwtUtil.isExpired(token)) {
-            log.error("Token이 만료 되었습니다.");
             filterChain.doFilter(request, response);
             return;
         }
 
         //userName Token에서 꺼내기
-        String userName = jwtUtil.getEmail(token);
+        String userEmail = jwtUtil.getEmail(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
         //권한 부여
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userName, null, List.of(new SimpleGrantedAuthority("USER")));
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         //Detail을 넣어주기
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
