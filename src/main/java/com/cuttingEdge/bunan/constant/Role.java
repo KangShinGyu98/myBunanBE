@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public enum Role {
@@ -34,7 +35,7 @@ public enum Role {
         List<SimpleGrantedAuthority> authorities = this.permissions
                 .stream()
                 .map(permission->new SimpleGrantedAuthority(permission.name()))
-                .toList();
+                .collect(Collectors.toList());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return authorities;
     }
