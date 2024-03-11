@@ -34,6 +34,9 @@ public class Music {
     @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
     private List<Lyric> lyrics;
 
+    @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
+    private List<Likey> likeys;
+
     private LocalDate released;
     private LocalDate posted;
     private LocalDate modified;

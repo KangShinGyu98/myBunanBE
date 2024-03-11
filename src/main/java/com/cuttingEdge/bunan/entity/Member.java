@@ -28,7 +28,10 @@ public class Member  implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Likey> likeys;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Music> musics;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
