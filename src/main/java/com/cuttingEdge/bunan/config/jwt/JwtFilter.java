@@ -1,5 +1,6 @@
 package com.cuttingEdge.bunan.config.jwt;
 
+import com.cuttingEdge.bunan.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Filter;
@@ -26,7 +27,7 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -49,7 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         //userName Token에서 꺼내기
         String userEmail = jwtUtil.getEmail(token);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
         //권한 부여
         UsernamePasswordAuthenticationToken authenticationToken =
